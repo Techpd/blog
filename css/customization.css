@@ -55,3 +55,94 @@
     transform: scale(1.02);
     transition: ease-in 0.2s;
 }
+/* fort featured image on home page  */
+.atbs-featured-module-1 .section-main article{
+  border-radius: 10px 10px 10px 10px;
+}
+
+/* for categoires section two diving into 1/3 of the section */
+.categories-list {
+  flex: 31.26%;
+}
+@media (max-width: 1440px){
+  .atbs-featured-module-3 .posts-list > * {
+    flex: 46%;
+  }
+}
+/* categories list */
+.categories-archive .categories-list {
+  background-color: var(--background-secondary);
+  margin: 15px;
+}
+.categories-archive .categories-list .list-item {
+  padding: 0;
+}
+.sidebar-categories-list{
+  margin-bottom: 45px;
+}
+.sidebar-categories-list .categories-list {
+  background-color: var(--background-secondary);
+  margin: 10px 0;
+}
+.sidebar-categories-list p.post__title {
+  font-size: 14px;
+}
+.block-heading {
+  text-align: center;
+}
+.categories-posts .widget__title:before,
+ .block-heading:before {
+  content: '';
+  width: 20%;
+  height: 2px;
+  background: var( --color-secondary);
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+/* .categories-posts .widget-wrap{
+  position: relative;
+} */
+.categories-posts .widget__title{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.categories-posts .widget__title:after,
+.block-heading:after {
+  content: '';
+  width: 20%;
+  height: 2px;
+  background: var( --color-secondary);
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+/* categories trending heading */
+.categories-posts{
+  margin-top: 20px;
+}
+@media (max-width: 1440px){
+  .sidebar-categories-list p.post__title {
+    font-size: 13px;
+  }
+}
+@media (max-width: 991px){
+  .sidebar-categories-list p.post__title {
+    font-size: 12px;
+  }
+}
+@media (max-width: 767px){
+  .categories-posts .widget__title:before,
+  .block-heading:before {
+    width: 10%;
+  }
+  .categories-posts .widget__title:after,
+  .block-heading:after {
+    width: 10%;
+  }
+}
+/* categories list ends*/

@@ -30,8 +30,8 @@
                 <div class="mobile-header__inner mobile-header__inner--flex">
                     <div class="header-branding header-branding--mobile mobile-header__section text-left">
                         <div class="header-logo header-logo--mobile flexbox__item text-left">
-                            <a href="index.html">
-                                <img src="<?php echo get_template_directory_uri(); ?>/img/logo.png" alt="logo">
+                            <a href="<?php site_url(); ?>">
+                                <img src="<?php echo get_template_directory_uri(); ?>/img/mob-logo.png" alt="logo">
                             </a>
                         </div>
                     </div>
@@ -68,8 +68,9 @@
                 <div class="navigation-bar__inner flexbox-wrap flexbox-center-y">
                     <div class="navigation-bar__section flex-box align-item-center">
                         <div class="header-logo">
-                            <a href="index.html">
-                                <?php the_custom_logo() ?>
+                            <a href="<?php echo site_url(); ?>">
+                                <?php //the_custom_logo() ?>
+                                <img src="<?php echo get_template_directory_uri(); ?>/img/mob-logo.png" alt="logo">
                             </a>
                         </div>
                     </div>

@@ -386,7 +386,7 @@ if (have_rows('page_builder')) {
                     <div style="border-bottom: 1px solid #ffffff10; padding-bottom: 40px;" class="atbs-block atbs-block--fullwidth atbs-posts-listing--grid-4-has-sidebar">
                         <div class="block-heading block-heading_style-1 block-heading-no-line">
                             <h4 class="block-heading__title">
-                                Higher Comments Posts
+                                Higher Comments
                             </h4>
                         </div>
                         <div class="atbs-block__inner flex-box">
