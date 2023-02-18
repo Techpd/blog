@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The template for displaying the footer
  *
@@ -12,7 +11,6 @@
  * @since custom_theme 1.0
  * @version 1.0
  */
-
 ?>
 
 <footer class="site-footer footer-1">
