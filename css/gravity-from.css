@@ -1,0 +1,15 @@
+.gform_wrapper .gfield_required {
+    color: var(--color-primary) !important;
+}
+.gform_wrapper.gravity-theme .gfield textarea.large {
+    min-height: 140px !important;
+}
+.gfield_label {
+    color: var(--color-white) !important;
+}
+/* thankyou message */
+div#gform_confirmation_message_1 {
+    font-size: 60px;
+    line-height: 88px;
+    color: var(--color-secondary);
+}

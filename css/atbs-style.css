@@ -492,7 +492,7 @@ ol {
 
 .inverse-text {
     position: relative;
-    color: white;
+    /* color: white; */
 }
 
 .link-overlay {
@@ -502,6 +502,10 @@ ol {
     right: 0;
     bottom: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(45deg, var(--color-excerpt), transparent);
+    opacity: .6;
 }
 
 .link-block {

@@ -1,5 +1,6 @@
 <?php
-function add_cors_header() {
+function add_cors_header()
+{
     header("Access-Control-Allow-Origin: http://localhost");
     header("Access-Control-Allow-Headers: *");
 }
@@ -86,7 +87,8 @@ add_theme_support('post-thumbnails');
 
 // adding theme support to add featured image using URL
 add_filter('admin_post_thumbnail_html', 'add_featured_image_url_input');
-function add_featured_image_url_input($content) {
+function add_featured_image_url_input($content)
+{
     $content .= '<p><label for="featured_image_url">Image URL:</label><br /><input type="text" id="featured_image_url" name="featured_image_url" value="" size="40" /></p>';
     $content .= '<script>
         jQuery(document).ready(function($) {
@@ -117,41 +119,42 @@ function save_featured_image_from_url($post_id)
     }
 }
 
-function set_featured_image_from_url( $post_id, $image_url ) {
-    if ( !filter_var( $image_url, FILTER_VALIDATE_URL ) ) {
+function set_featured_image_from_url($post_id, $image_url)
+{
+    if (!filter_var($image_url, FILTER_VALIDATE_URL)) {
         echo "<script>alert('URL is not valid. Please try another.');</script>";
         return;
     }
-  
-    $response = wp_remote_get( $image_url );
-    if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+
+    $response = wp_remote_get($image_url);
+    if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
         echo "<script>alert('URL is not accessible. Please try another.');</script>";
         return;
     }
-  
+
     $upload_dir = wp_upload_dir();
-    $image_data = wp_remote_retrieve_body( $response );
+    $image_data = wp_remote_retrieve_body($response);
     $filename = basename($image_url);
-    if(wp_mkdir_p($upload_dir['path']))
+    if (wp_mkdir_p($upload_dir['path']))
         $file = $upload_dir['path'] . '/' . $filename;
     else
         $file = $upload_dir['basedir'] . '/' . $filename;
     file_put_contents($file, $image_data);
-  
-    $wp_filetype = wp_check_filetype($filename, null );
+
+    $wp_filetype = wp_check_filetype($filename, null);
     $attachment = array(
         'post_mime_type' => $wp_filetype['type'],
         'post_title' => sanitize_file_name($filename),
         'post_content' => '',
         'post_status' => 'inherit'
     );
-    $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+    $attach_id = wp_insert_attachment($attachment, $file, $post_id);
     require_once(ABSPATH . 'wp-admin/includes/image.php');
-    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-    wp_update_attachment_metadata( $attach_id, $attach_data );
-    set_post_thumbnail( $post_id, $attach_id );
-  }
-   
+    $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+    wp_update_attachment_metadata($attach_id, $attach_data);
+    set_post_thumbnail($post_id, $attach_id);
+}
+
 // adding theme support to add featured image using URL end here --------------->
 
 // adding featured post On Off
@@ -330,14 +333,15 @@ function my_sticky_handle_row_actions()
     exit;
 }
 add_action('load-edit.php', 'my_sticky_handle_row_actions');
- 
+
 // hover quick action for the sticky post  end here ------------------>
 
 // adding post duplicator funtion 
-function duplicate_post() {
+function duplicate_post()
+{
     global $wpdb;
 
-    if (! ( isset( $_GET['post']) || isset( $_POST['post']) || ( isset($_REQUEST['action']) && 'duplicate_post' == $_REQUEST['action'] ) ) ) {
+    if (!(isset($_GET['post']) || isset($_POST['post']) || (isset($_REQUEST['action']) && 'duplicate_post' == $_REQUEST['action']))) {
         wp_die('No post to duplicate has been supplied!');
     }
 
@@ -364,23 +368,22 @@ function duplicate_post() {
 
         $post_meta_infos = $wpdb->get_results("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$post_id");
 
-        if (count($post_meta_infos)!=0) {
+        if (count($post_meta_infos) != 0) {
             $sql_query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 
             foreach ($post_meta_infos as $meta_info) {
                 $meta_key = $meta_info->meta_key;
                 $meta_value = addslashes($meta_info->meta_value);
-                $sql_query_sel[]= "SELECT $new_post_id, '$meta_key', '$meta_value'";
+                $sql_query_sel[] = "SELECT $new_post_id, '$meta_key', '$meta_value'";
             }
 
-            $sql_query.= implode(" UNION ALL ", $sql_query_sel);
+            $sql_query .= implode(" UNION ALL ", $sql_query_sel);
             $wpdb->query($sql_query);
         }
 
         wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
         exit;
-    }
-     else {
+    } else {
         wp_die('Post creation failed, could not find original post: ' . $post_id);
     }
     $i++;
@@ -389,57 +392,60 @@ function duplicate_post() {
 add_action('admin_action_duplicate_post', 'duplicate_post');
 
 // Add duplicate post row action
-function add_duplicate_post_row_action( $actions, $post ) {
-    if ( current_user_can( 'edit_posts' ) ) {
-        $actions['duplicate_post'] = '<a href="' . wp_nonce_url( 'admin.php?action=duplicate_post&post=' . $post->ID, basename( __FILE__ ), 'duplicate_nonce' ) . '">' . __( 'Duplicate Post', 'text-domain' ) . '</a>';
+function add_duplicate_post_row_action($actions, $post)
+{
+    if (current_user_can('edit_posts')) {
+        $actions['duplicate_post'] = '<a href="' . wp_nonce_url('admin.php?action=duplicate_post&post=' . $post->ID, basename(__FILE__), 'duplicate_nonce') . '">' . __('Duplicate Post', 'text-domain') . '</a>';
     }
     return $actions;
 }
-add_filter( 'post_row_actions', 'add_duplicate_post_row_action', 10, 2 );
+add_filter('post_row_actions', 'add_duplicate_post_row_action', 10, 2);
 
 // Handle duplicate post action
-function handle_duplicate_post_action() {
-    if ( isset( $_GET['action'] ) && $_GET['action'] == 'duplicate_post' && isset( $_GET['post'] ) ) {
-        if ( ! wp_verify_nonce( $_REQUEST['duplicate_nonce'], basename( __FILE__ ) ) ) {
-            die( 'Security check failed' );
+function handle_duplicate_post_action()
+{
+    if (isset($_GET['action']) && $_GET['action'] == 'duplicate_post' && isset($_GET['post'])) {
+        if (!wp_verify_nonce($_REQUEST['duplicate_nonce'], basename(__FILE__))) {
+            die('Security check failed');
         }
 
-        $post_id = absint( $_GET['post'] );
-        $new_post_id = duplicate_post( $post_id );
+        $post_id = absint($_GET['post']);
+        $new_post_id = duplicate_post($post_id);
 
-        wp_redirect( admin_url( 'post.php?action=edit&post=' . $new_post_id ) );
+        wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
         exit;
     }
 }
-add_action( 'admin_init', 'handle_duplicate_post_action' );
+add_action('admin_init', 'handle_duplicate_post_action');
 // adding post duplicator funtion  end here ---------->
 
 // Adding svg upload with fixng height width problem start here ------------->
 // Allow SVG
-add_filter( 'wp_check_filetype_and_ext', function($data, $file, $filename, $mimes) {
+add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
 
     global $wp_version;
-    if ( $wp_version !== '4.7.1' ) {
+    if ($wp_version !== '4.7.1') {
         return $data;
     }
 
-    $filetype = wp_check_filetype( $filename, $mimes );
+    $filetype = wp_check_filetype($filename, $mimes);
 
     return [
         'ext'             => $filetype['ext'],
         'type'            => $filetype['type'],
         'proper_filename' => $data['proper_filename']
     ];
+}, 10, 4);
 
-}, 10, 4 );
-
-function cc_mime_types( $mimes ) {
+function cc_mime_types($mimes)
+{
     $mimes['svg'] = 'image/svg+xml';
     return $mimes;
 }
-add_filter( 'upload_mimes', 'cc_mime_types' );
+add_filter('upload_mimes', 'cc_mime_types');
 
-function fix_svg() {
+function fix_svg()
+{
     echo '<style type="text/css">
             .attachment-266x266, .thumbnail img {
                 width: 100% !important;
@@ -447,16 +453,94 @@ function fix_svg() {
             }
          </style>';
 }
-add_action( 'admin_head', 'fix_svg' );
+add_action('admin_head', 'fix_svg');
 // Adding svg upload with fixng height width problem end here ----------------->
 
 // Post categories have feature to upload categoires 
 add_action('after_setup_theme', 'theme_setup');
-function theme_setup() {
+function theme_setup()
+{
     add_theme_support('category-thumbnails');
 }
 // Post categories have feature to upload categoires  -------------->
 
+// created own breadcrumbs function ---------------------------------------------->
+function my_breadcrumbs()
+{
+    $separator = '&gt;';
+    $home_text = 'Home';
+    $show_on_home = 0;
+    $before = '<span class="current">';
+    $after = '</span>';
+
+    global $post;
+    $output = '';
+
+    if (is_home() || is_front_page()) {
+        if ($show_on_home == 1) $output .= '<a href="' . get_home_url() . '">' . $home_text . '</a>';
+    } else {
+        $output .= '<a href="' . get_home_url() . '">' . $home_text . '</a> ' . $separator . ' ';
+
+        if (is_category()) {
+            $cat = get_category(get_query_var('cat'));
+            if ($cat->parent != 0) {
+                $output .= get_category_parents($cat->parent, true, ' ' . $separator . ' ');
+            }
+            $output .= $before . 'Archive by category "' . single_cat_title('', false) . '"' . $after;
+        } elseif (is_search()) {
+            $output .= $before . 'Search results for "' . get_search_query() . '"' . $after;
+        } elseif (is_404()) {
+            $output .= $before . '404 Not Found' . $after;
+        } elseif (is_single()) {
+            $cat = get_the_category();
+            if (isset($cat[0])) {
+                $output .= get_category_parents($cat[0], true, ' ' . $separator . ' ');
+            }
+            $output .= $before . get_the_title() . $after;
+        } elseif (is_page()) {
+            if ($post->post_parent) {
+                $ancestors = get_post_ancestors($post->ID);
+                $ancestors = array_reverse($ancestors);
+                foreach ($ancestors as $ancestor) {
+                    $output .= '<a href="' . get_permalink($ancestor) . '">' . get_the_title($ancestor) . '</a> ' . $separator . ' ';
+                }
+            }
+            $output .= $before . get_the_title() . $after;
+        }
+    }
+    echo $output;
+    // Call an action hook for the breadcrumbs
+    // do_action( 'my_breadcrumbs_display' );
+}
+add_action('breadcrumbs', 'my_breadcrumbs');
+// add_action( 'my_breadcrumbs', 'my_breadcrumbs_display' );
+
+// Adding Class on Gravity form on submit button
+add_filter('gform_submit_button', 'add_custom_css_classes', 10, 2);
+function add_custom_css_classes($button, $form)
+{
+    $dom = new DOMDocument();
+    $dom->loadHTML('<?xml encoding="utf-8" ?>' . $button);
+    $input = $dom->getElementsByTagName('input')->item(0);
+    $classes = $input->getAttribute('class');
+    $classes .= " btn btn-primary contactform-submit";
+    $input->setAttribute('class', $classes);
+    return $dom->saveHtml($input);
+}
+add_filter('gform_submit_button', 'gf_change_submit_button_text', 10, 2);
+function gf_change_submit_button_text($button, $form)
+{
+    $dom = new DOMDocument();
+    $dom->loadHTML('<?xml encoding="utf-8" ?>' . $button);
+    $input = $dom->getElementsByTagName('input')->item(0);
+    $onclick = $input->getAttribute('onclick');
+    $onclick .= " this.value='Sending...'"; // Change button text when clicked.
+    $input->setAttribute('onclick', $onclick);
+    return $dom->saveHtml($input);
+}
+// Adding Class on Gravity form on submit button end here ------------->
+
+// created own breadcrumbs function end here --------------------------------->
 /* ============================================================================================
    THEME SUPPORT CODE END HERE
    ============================================================================================
@@ -466,6 +550,70 @@ function theme_setup() {
 require_once get_template_directory() . '/template-parts/ajax-posts/ajax-function.php';
 // end of including ajax on home page
 
+// create nested comment system 
+function theme_prefix_setup()
+{
+    add_theme_support('nested-comments');
+}
+add_action('after_setup_theme', 'theme_prefix_setup');
 
 
+$args = array(
+    'walker'            => null,
+    'max_depth'         => 2, // change the value as per your requirement
+    'style'             => 'div',
+    'callback'          => 'my_comment_callback',
+    'end-callback'      => null,
+    'type'              => 'all',
+    'reply_text'        => 'Reply',
+    'page'              => '',
+    'per_page'          => '',
+    'avatar_size'       => 80,
+    'reverse_top_level' => true,
+    'reverse_children'  => true,
+    'format'            => 'html5',
+    'short_ping'        => false,
+    'echo'              => true,
+);
+wp_list_comments($args);
 
+function my_comment_callback($comment, $args, $depth)
+{
+    $GLOBALS['comment'] = $comment;
+?>
+    <ol class="comment-list">
+        <li id="comment-<?php comment_ID(); ?>"></li>
+    </ol>
+    <div class="comment-body" id="div-comment-<?php comment_ID(); ?>">
+        <footer class="comment-meta">
+            <div class="comment-author vcard">
+                <img src="http://via.placeholder.com/180x180" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says">says:</span>
+            </div><!-- .comment-author -->
+            <div class="comment-metadata">
+                <a href="#">
+                    <time datetime="2016-10-21T13:31:45+00:00"><?php comment_date(); ?></time>
+                </a>
+            </div><!-- .comment-metadata -->
+        </footer>
+        <div class="comment-content">
+            <p>
+                <?php comment_text(); ?>
+            </p>
+        </div>
+        <div class="reply">
+            <?php comment_reply_link(array_merge($args, array('depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
+        </div>
+
+
+    <?php
+}
+
+function my_theme_setup() {
+    add_theme_support( 'threaded-comments' );
+    if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+        wp_enqueue_script( 'comment-reply' );
+    }
+}
+add_action( 'after_setup_theme', 'my_theme_setup' );
+
+// create nested comment system  -------------end here--------------> 

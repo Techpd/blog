@@ -1327,7 +1327,8 @@ var ATBS = ATBS || {};
             var $carousels = $('.js-atbs-carousel-4i30m');
             $carousels.each(function () {
                 var carousel_loop = $(this).data('carousel-loop');
-                var carousel_loop = $(this).data('carousel-loop');
+                var carousel_autoplay = $(this).data('auto-play');
+                var carousel_autoplay_time = $(this).data('carousel-autoplay-time');
                 $(this).owlCarousel({
                     items: 4,
                     margin: 30,
@@ -1335,6 +1336,10 @@ var ATBS = ATBS || {};
                     dots: true,
                     loop: carousel_loop,
                     autoHeight: true,
+                    autoplay: carousel_autoplay,
+                    autoplayTimeout: carousel_autoplay_time,
+                    // autoplayHoverPause: true,
+                    // lazyLoad: true,
                     navText: ['<i class="mdicon mdicon-navigate_before"></i>', '<i class="mdicon mdicon-navigate_next"></i>'],
                     smartSpeed: 500,
                     responsive: {

@@ -1,3 +1,8 @@
+/* section main home page */
+
+/* section main home page end here ------>*/
+
+
 /* post listing */
 .posts-list .list-item:hover {
     transform: scale(1.02);
@@ -146,3 +151,11 @@
   }
 }
 /* categories list ends*/
+/* comment system */
+.comment-form-url{
+  display: none;
+}
+textarea#comment,
+#comments input:not(#submit) {
+  background: #1D1F24;
+}

@@ -415,6 +415,21 @@ if (have_posts()) :
                                         </div><!-- #respond -->
                                     </div><!-- #comments -->
                                 </div>
+                                <!-- comment template start here -->
+                                <?php //get_template_part('template-parts/comment-system'); 
+                                ?>
+                                <?php
+                                if (comments_open() || get_comments_number()) :
+                                ?>
+                                    <div class="comments-section single-entry-section">
+                                        <div id="comments" class="comments-area">
+                                            <?php comments_template(); ?>
+                                        </div>
+                                    </div>
+                                <?php
+                                endif;
+                                ?>
+                                <!-- comment template  ==================================end here-->
                                 <div class="atbs-block related-posts">
                                     <div class="block-heading block-heading_style-1 block-heading-no-line">
                                         <h4 class="block-heading__title">

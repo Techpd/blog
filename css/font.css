@@ -25,3 +25,8 @@
 .page-404-description {
     font-family: 'Roboto', sans-serif;
 }
+
+/* for Gravity Form */
+.gfield_label{
+    font-family: 'Poppins', sans-serif;
+}

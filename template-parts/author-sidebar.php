@@ -4,23 +4,21 @@ $admin_author = get_template_directory_uri() . '../img/admin-author.png';
 <div class="atbs-section-sidebar js-sticky-sidebar">
     <!-- Categories list -->
     <!-- display only if all categories page-->
-    <?php if (!has_category()) :
+    <?php if (!has_category() && strpos( $_SERVER['REQUEST_URI'], '/categories/' ) == true ) :
         get_template_part('template-parts/popular-posts');
     //  display only if all categories ------page-------> end here
     else :
-        if (! is_front_page()) :
     ?>
-            <div class="sidebar-categories-list ">
-                <div class="block-heading block-heading_style-1 block-heading-no-line">
-                    <h6 class="block-heading__title">
-                        Categories
-                    </h6>
-                </div>
-                <?php get_template_part('template-parts/ajax-posts/listing-categories'); ?>
+        <div class="sidebar-categories-list ">
+            <div class="block-heading block-heading_style-1 block-heading-no-line">
+                <h6 class="block-heading__title">
+                    Categories
+                </h6>
             </div>
-            <!-- Categoires lists ends -->
+            <?php get_template_part('template-parts/ajax-posts/listing-categories'); ?>
+        </div>
+        <!-- Categoires lists ends -->
     <?php
-        endif;
     endif; ?>
     <div class="widget atbs-atbs-widget atbs-widget-author-box">
         <div class="widget-wrap">
