@@ -159,3 +159,21 @@ textarea#comment,
 #comments input:not(#submit) {
   background: #1D1F24;
 }
+ol.commentlist,
+ul.children {
+    list-style: none;
+}
+.depth-1.parent > :nth-child(2){
+  margin-left: 15px;
+} 
+/* admin reply css */
+.comment-author-admin {
+  border-left: 3px solid;
+  border-right: 3px solid;
+  /* border-bottom: 1px solid; */
+  border-color: var(--color-primary);
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding-left: 15px;
+}
+/* admin reply css */

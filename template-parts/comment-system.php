@@ -3,7 +3,11 @@
         <div class="block-heading block-heading_style-1 block-heading-no-line">
             <h4 class="block-heading__title"><?php echo $comments_counts; ?>Comments</h4>
         </div>
-        <ol class="comment-list">
+
+    </div><!-- #comments -->
+</div>
+
+<ol class="comment-list">
             <li id="comment-4" class="comment even thread-even depth-1 parent">
                 <div id="div-comment-4" class="comment-body">
                     <footer class="comment-meta">
@@ -152,5 +156,3 @@
                 </p>
             </form>
         </div><!-- #respond -->
-    </div><!-- #comments -->
-</div>

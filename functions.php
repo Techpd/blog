@@ -551,16 +551,16 @@ require_once get_template_directory() . '/template-parts/ajax-posts/ajax-functio
 // end of including ajax on home page
 
 // create nested comment system 
-function theme_prefix_setup()
-{
-    add_theme_support('nested-comments');
-}
-add_action('after_setup_theme', 'theme_prefix_setup');
+// function theme_prefix_setup()
+// {
+//     add_theme_support('nested-comments');
+// }
+// add_action('after_setup_theme', 'theme_prefix_setup');
 
 
 $args = array(
     'walker'            => null,
-    'max_depth'         => 2, // change the value as per your requirement
+    'max_depth'         => 3, // change the value as per your requirement
     'style'             => 'div',
     'callback'          => 'my_comment_callback',
     'end-callback'      => null,
@@ -587,7 +587,7 @@ function my_comment_callback($comment, $args, $depth)
     <div class="comment-body" id="div-comment-<?php comment_ID(); ?>">
         <footer class="comment-meta">
             <div class="comment-author vcard">
-                <img src="http://via.placeholder.com/180x180" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says">says:</span>
+                <img src="" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says">says:</span>
             </div><!-- .comment-author -->
             <div class="comment-metadata">
                 <a href="#">
@@ -603,17 +603,76 @@ function my_comment_callback($comment, $args, $depth)
         <div class="reply">
             <?php comment_reply_link(array_merge($args, array('depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
         </div>
-
-
     <?php
 }
 
-function my_theme_setup() {
-    add_theme_support( 'threaded-comments' );
-    if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-        wp_enqueue_script( 'comment-reply' );
+function my_theme_setup()
+{
+    add_theme_support('threaded-comments');
+    if (is_singular() && comments_open() && get_option('thread_comments')) {
+        wp_enqueue_script('comment-reply');
     }
 }
-add_action( 'after_setup_theme', 'my_theme_setup' );
+add_action('after_setup_theme', 'my_theme_setup');
+function remove_comment_count_title( $output, $number ) {
+    // Return an empty string to remove the comment count and title
+    return '';
+}
+add_filter( 'comments_number', 'remove_comment_count_title', 10, 2 );
+
+
+function add_admin_to_comment_reply_link($link, $args, $comment, $post) {
+    // Check if the user is logged in and has the 'administrator' role
+    if (is_user_logged_in() && current_user_can('administrator')) {
+        // Get the parent comment ID for the reply
+        $parent_id = $comment->comment_parent ? $comment->comment_parent : $comment->comment_ID;
+
+        // Add the 'data-user-id' attribute to the reply link with the admin user ID
+        $link = str_replace('data-replyto="0"', 'data-replyto="' . $parent_id . '" data-user-id="1"', $link);
+    }
+
+    return $link;
+}
+add_filter('comment_reply_link', 'add_admin_to_comment_reply_link', 10, 4);
+
 
 // create nested comment system  -------------end here--------------> 
+
+// custom post registering for comment system
+// function register_comment_system_post_type()
+// {
+//     $labels = array(
+//         'name' => __('Comment Systems'),
+//         'singular_name' => __('Comment System'),
+//         'add_new' => __('Add New'),
+//         'add_new_item' => __('Add New Comment System'),
+//         'edit_item' => __('Edit Comment System'),
+//         'new_item' => __('New Comment System'),
+//         'view_item' => __('View Comment System'),
+//         'search_items' => __('Search Comment Systems'),
+//         'not_found' => __('No Comment Systems found'),
+//         'not_found_in_trash' => __('No Comment Systems found in trash'),
+//         'parent_item_colon' => '',
+//         'menu_name' => __('Comment Systems')
+//     );
+
+//     $args = array(
+//         'labels' => $labels,
+//         'description' => 'Custom post type for comment systems',
+//         'public' => false, // Set this to true if you want the post type to be public
+//         'publicly_queryable' => false, // Set this to true if you want the post type to be publicly queryable
+//         'show_ui' => true,
+//         'show_in_menu' => true,
+//         'query_var' => true,
+//         'rewrite' => array('slug' => 'comment-system'),
+//         'capability_type' => 'post',
+//         'has_archive' => true,
+//         'hierarchical' => false,
+//         'menu_position' => 20,
+//         'supports' => array('title', 'editor', 'thumbnail'),
+//         'menu_icon' => 'dashicons-admin-comments'
+//     );
+
+//     register_post_type('comment-system', $args);
+// }
+// add_action('init', 'register_comment_system_post_type');
