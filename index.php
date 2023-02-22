@@ -200,9 +200,20 @@ if (have_posts()) :
                                                 </div>
                                                 <div class="single-box-translate js-sticky-sidebar">
                                                     <div class="entry-meta">
+                                                        <?php
+                                                        // check if user is an admin
+                                                        
+                                                            // get the ACF field value for the current user
+                                                            $image = get_field('profile_pic_upload');
+                                                            if ($image) {
+                                                                $image_url = $image['url'];
+                                                                // output the image using the image URL
+                                                                echo '<img src="' . $image_url . '" alt="Profile Image">';
+                                                            }
+                                                        ?>
                                                         <div class="entry-author entry-author_style-1">
                                                             <a class="entry-author__avatar" href="<?php echo $author_url; ?>" title="Posts by <?php echo $author_name; ?>" rel="author">
-                                                                <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php echo $author_avatar; ?>">
+                                                                <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php //echo $image_url; ?>">
                                                             </a>
                                                             <div class="entry-author__text">
                                                                 <a class="entry-author__name" title="Posts by <?php echo $author_name; ?>" rel="author" href="<?php echo $author_url; ?>"><?php echo $author_name; ?></a>
@@ -291,6 +302,7 @@ if (have_posts()) :
                                             // echo '<h1>' . $imageFolder_avtars . '</h1>';
                                             ?>
                                             <!-- comment template  ==================================end here-->
+                                            <!-- below script to change commented user avatar image randomly -->
                                             <script>
                                                 const dir_path = "<?php echo $imageFolder_avtars ?>";
                                                 const image_files = [];

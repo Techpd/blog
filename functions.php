@@ -514,7 +514,7 @@ function my_breadcrumbs()
 }
 add_action('breadcrumbs', 'my_breadcrumbs');
 // add_action( 'my_breadcrumbs', 'my_breadcrumbs_display' );
-
+// created own breadcrumbs function end here --------------------------------->
 // Adding Class on Gravity form on submit button
 add_filter('gform_submit_button', 'add_custom_css_classes', 10, 2);
 function add_custom_css_classes($button, $form)
@@ -540,7 +540,71 @@ function gf_change_submit_button_text($button, $form)
 }
 // Adding Class on Gravity form on submit button end here ------------->
 
-// created own breadcrumbs function end here --------------------------------->
+// adding custom profile pic for the admin user 
+function custom_user_avatar($avatar, $id_or_email, $size, $default, $alt)
+{
+    // Set the user ID to 123
+    $user_id = 1;
+
+    // Check if the avatar is for the user with ID 123
+    if (is_numeric($id_or_email) && $id_or_email == $user_id || (is_object($id_or_email) && $id_or_email->user_id == $user_id)) {
+        // Set the URL of the custom avatar
+        $imageFolder_avtars = get_template_directory_uri() . '/img/admin-author.png';
+        $custom_avatar_url = $imageFolder_avtars;
+
+        // Replace the default avatar with the custom avatar
+        $avatar = '<img src="' . $custom_avatar_url . '" width="' . $size . '" height="' . $size . '" alt="' . $alt . '" class="avatar avatar-' . $size . ' photo" />';
+    }
+
+    return $avatar;
+}
+add_filter('get_avatar', 'custom_user_avatar', 10, 5);
+
+// adding custom profile pic for the admin user  end --------------->
+
+function custom_author_name($name)
+{
+    $admin = get_users(array('role' => 'administrator', 'number' => 1)); // Get the first administrator user
+    if (!empty($admin)) {
+        $name = $admin[0]->display_name; // Use the display name of the first administrator user
+    }
+    return $name;
+}
+add_filter('the_author', 'custom_author_name');
+
+// Save custom field on user profile update
+function save_custom_user_profile_fields($user_id)
+{
+    if (current_user_can('edit_user', $user_id)) {
+        if (isset($_FILES['custom_image'])) {
+            $attachment_id = media_handle_upload('custom_image', 0);
+            if (is_numeric($attachment_id)) {
+                update_user_meta($user_id, 'custom_image', wp_get_attachment_url($attachment_id));
+            }
+        }
+    }
+}
+add_action('personal_options_update', 'save_custom_user_profile_fields');
+add_action('edit_user_profile_update', 'save_custom_user_profile_fields');
+
+// custom image upload option the admin users end here
+
+function custom_comment_author_name($author)
+{
+    $comment = get_comment(); // Get the current comment object
+    $user_id = $comment->user_id; // Get the user ID of the comment author
+
+    // Check if the comment author is an administrator
+    if (user_can($user_id, 'administrator')) {
+        $admin = get_users(array('role' => 'administrator', 'number' => 1)); // Get the first administrator user
+        if (!empty($admin)) {
+            $author = $admin[0]->display_name; // Use the display name of the first administrator user
+        }
+    }
+
+    return $author;
+}
+add_filter('get_comment_author', 'custom_comment_author_name');
 /* ============================================================================================
    THEME SUPPORT CODE END HERE
    ============================================================================================
@@ -606,6 +670,31 @@ function my_comment_callback($comment, $args, $depth)
     <?php
 }
 
+// for adding and remove author url
+function custom_comment_author_link($link, $author, $comment_ID)
+{
+    $comment = get_comment($comment_ID); // Get the current comment object
+    $user_id = $comment->user_id; // Get the user ID of the comment author
+
+    // Check if the comment author is an administrator
+    if (user_can($user_id, 'administrator')) {
+        $admin = get_users(array('role' => 'administrator', 'number' => 1)); // Get the first administrator user
+        if (!empty($admin)) {
+            $admin_profile_url = get_author_posts_url($admin[0]->ID); // Get the profile URL of the first administrator user
+            $link = '<a href="' . $admin_profile_url . '">' . $author . '</a>'; // Wrap the comment author name in a link
+        }
+    } elseif (user_can($user_id, 'customer') || user_can($user_id, 'subscriber')) {
+        $link = '<span>' . $author . '</span>'; // Wrap the comment author name in a span
+    } else {
+        $link = '<a href="#">' . $author . '</a>'; // Wrap the comment author name in a link with "#" URL
+    }
+
+    return $link;
+}
+add_filter('get_comment_author_link', 'custom_comment_author_link', 10, 3);
+
+// for adding and remove author url end here--------------->
+
 function my_theme_setup()
 {
     add_theme_support('threaded-comments');
@@ -614,14 +703,16 @@ function my_theme_setup()
     }
 }
 add_action('after_setup_theme', 'my_theme_setup');
-function remove_comment_count_title( $output, $number ) {
+function remove_comment_count_title($output, $number)
+{
     // Return an empty string to remove the comment count and title
     return '';
 }
-add_filter( 'comments_number', 'remove_comment_count_title', 10, 2 );
+add_filter('comments_number', 'remove_comment_count_title', 10, 2);
 
 
-function add_admin_to_comment_reply_link($link, $args, $comment, $post) {
+function add_admin_to_comment_reply_link($link, $args, $comment, $post)
+{
     // Check if the user is logged in and has the 'administrator' role
     if (is_user_logged_in() && current_user_can('administrator')) {
         // Get the parent comment ID for the reply
@@ -635,44 +726,4 @@ function add_admin_to_comment_reply_link($link, $args, $comment, $post) {
 }
 add_filter('comment_reply_link', 'add_admin_to_comment_reply_link', 10, 4);
 
-
 // create nested comment system  -------------end here--------------> 
-
-// custom post registering for comment system
-// function register_comment_system_post_type()
-// {
-//     $labels = array(
-//         'name' => __('Comment Systems'),
-//         'singular_name' => __('Comment System'),
-//         'add_new' => __('Add New'),
-//         'add_new_item' => __('Add New Comment System'),
-//         'edit_item' => __('Edit Comment System'),
-//         'new_item' => __('New Comment System'),
-//         'view_item' => __('View Comment System'),
-//         'search_items' => __('Search Comment Systems'),
-//         'not_found' => __('No Comment Systems found'),
-//         'not_found_in_trash' => __('No Comment Systems found in trash'),
-//         'parent_item_colon' => '',
-//         'menu_name' => __('Comment Systems')
-//     );
-
-//     $args = array(
-//         'labels' => $labels,
-//         'description' => 'Custom post type for comment systems',
-//         'public' => false, // Set this to true if you want the post type to be public
-//         'publicly_queryable' => false, // Set this to true if you want the post type to be publicly queryable
-//         'show_ui' => true,
-//         'show_in_menu' => true,
-//         'query_var' => true,
-//         'rewrite' => array('slug' => 'comment-system'),
-//         'capability_type' => 'post',
-//         'has_archive' => true,
-//         'hierarchical' => false,
-//         'menu_position' => 20,
-//         'supports' => array('title', 'editor', 'thumbnail'),
-//         'menu_icon' => 'dashicons-admin-comments'
-//     );
-
-//     register_post_type('comment-system', $args);
-// }
-// add_action('init', 'register_comment_system_post_type');
