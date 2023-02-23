@@ -202,18 +202,19 @@ if (have_posts()) :
                                                     <div class="entry-meta">
                                                         <?php
                                                         // check if user is an admin
-                                                        
-                                                            // get the ACF field value for the current user
-                                                            $image = get_field('profile_pic_upload');
-                                                            if ($image) {
-                                                                $image_url = $image['url'];
-                                                                // output the image using the image URL
-                                                                echo '<img src="' . $image_url . '" alt="Profile Image">';
-                                                            }
+
+                                                        // get the ACF field value for the current user
+                                                        $image = get_field('profile_pic_upload');
+                                                        if ($image) {
+                                                            $image_url = $image['url'];
+                                                            // output the image using the image URL
+                                                            echo '<img src="' . $image_url . '" alt="Profile Image">';
+                                                        }
                                                         ?>
                                                         <div class="entry-author entry-author_style-1">
                                                             <a class="entry-author__avatar" href="<?php echo $author_url; ?>" title="Posts by <?php echo $author_name; ?>" rel="author">
-                                                                <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php //echo $image_url; ?>">
+                                                                <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php //echo $image_url; 
+                                                                                                                                                                ?>">
                                                             </a>
                                                             <div class="entry-author__text">
                                                                 <a class="entry-author__name" title="Posts by <?php echo $author_name; ?>" rel="author" href="<?php echo $author_url; ?>"><?php echo $author_name; ?></a>
@@ -276,7 +277,7 @@ if (have_posts()) :
                                         </div>
                                     </div><!-- .single-content -->
                                 </article>
-                                <!-- comment template  ==================================start here-->
+                                <!-- comment template  ================================== start here-->
                                 <?php
                                 if (comments_open() || get_comments_number()) :
                                 ?>
@@ -301,37 +302,69 @@ if (have_posts()) :
                                             $imageFolder_avtars = get_template_directory_uri() . '/img/author-icons/';
                                             // echo '<h1>' . $imageFolder_avtars . '</h1>';
                                             ?>
-                                            <!-- comment template  ==================================end here-->
                                             <!-- below script to change commented user avatar image randomly -->
                                             <script>
-                                                const dir_path = "<?php echo $imageFolder_avtars ?>";
-                                                const image_files = [];
+                                                $ = jQuery;
+                                                $(function() {
+                                                    const dir_path = "<?php echo $imageFolder_avtars ?>";
+                                                    const image_files = [];
 
-                                                fetch(dir_path)
-                                                    .then(response => response.text())
-                                                    .then(html => {
-                                                        const parser = new DOMParser();
-                                                        const doc = parser.parseFromString(html, 'text/html');
-                                                        const links = doc.querySelectorAll('a');
-                                                        links.forEach(link => {
-                                                            if (link.getAttribute('href').match(/\.(webp)$/)) {
-                                                                const image_url = dir_path + link.getAttribute('href');
-                                                                image_files.push(image_url);
-                                                            }
+                                                    fetch(dir_path)
+                                                        .then(response => response.text())
+                                                        .then(html => {
+                                                            const parser = new DOMParser();
+                                                            const doc = parser.parseFromString(html, 'text/html');
+                                                            const links = doc.querySelectorAll('a');
+                                                            links.forEach(link => {
+                                                                if (link.getAttribute('href').match(/\.(webp)$/)) {
+                                                                    const image_url = dir_path + link.getAttribute('href');
+                                                                    image_files.push(image_url);
+                                                                }
+                                                            });
+                                                            $('.commentlist .vcard img').each(function() {
+                                                                const is_admin_avatar = $(this).parent().parent().parent().hasClass('comment-author-admin') && $(this).index() === 0;
+                                                                if (is_admin_avatar) {
+                                                                    $(this).parent().parent().parent().addClass('admin-comment');
+                                                                }
+                                                                if (!is_admin_avatar) {
+                                                                    const random_icon_index = Math.floor(Math.random() * image_files.length);
+                                                                    const random_author_icon = image_files[random_icon_index];
+                                                                    $(this).attr('src', random_author_icon);
+                                                                }
+                                                            });
+
                                                         });
-                                                        $ = jQuery;
-                                                        $('.comment-author.vcard img:not(.comment-author-admin img)').each(function() {
-                                                            const random_icon_index = Math.floor(Math.random() * image_files.length);
-                                                            const random_author_icon = image_files[random_icon_index];
-                                                            $(this).attr('src', random_author_icon);
-                                                        });
+                                                    // appending the reply where user click
+                                                    // $(document).on('click', '.comment-reply-link', function(e) {
+                                                    //     e.preventDefault();
+                                                    //     $('#respond').fadeIn();
+                                                    //     $(this).parent().append($('#respond'));
+                                                    // });
+                                                    $(document).on('click', '.comment-reply-link[data-commentid]', function(e) {
+                                                        e.preventDefault();
+                                                        const commentId = $(this).data('commentid');
+                                                        $('#comment_parent').val(commentId);
+                                                        const respondContainer = $('#respond');
+                                                        const currentParent = $(this).parent();
+                                                        if (currentParent.children('#respond').length) {
+                                                            currentParent.children('#respond').remove();
+                                                        } else {
+                                                            respondContainer.fadeIn();
+                                                            currentParent.append(respondContainer);
+                                                        }
                                                     });
+                                                });
                                             </script>
+
                                         </div><!-- #comments -->
+                                        <div id="load-more-comments-container">
+                                            <button id="load-more-comments" data-comment-post-id="<?php echo get_the_ID(); ?>" class="comment-btn">Load More Comments</button>
+                                        </div>
                                     </div>
                                 <?php
                                 endif;
                                 ?>
+                                <!-- comment template  ==================================end here-->
                                 <div class="atbs-block related-posts">
                                     <div class="block-heading block-heading_style-1 block-heading-no-line">
                                         <h4 class="block-heading__title">

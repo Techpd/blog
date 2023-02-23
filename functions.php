@@ -630,45 +630,61 @@ $args = array(
     'end-callback'      => null,
     'type'              => 'all',
     'reply_text'        => 'Reply',
-    'page'              => '',
-    'per_page'          => '',
+    'page'              => 1, // add the page parameter and set it to 1
+    'per_page'          => 3, // add the per_page parameter and set it to 3
     'avatar_size'       => 80,
     'reverse_top_level' => true,
     'reverse_children'  => true,
     'format'            => 'html5',
     'short_ping'        => false,
-    'echo'              => true,
+    'echo'              => false, // set echo to false to return comments instead of echoing them
 );
-wp_list_comments($args);
+if (!isset($_POST['action']) || $_POST['action'] !== 'load_comments') {
+    wp_list_comments($args);
+} else {
+    $comments = get_comments($args);
+    wp_send_json($comments);
+}
+
 
 function my_comment_callback($comment, $args, $depth)
 {
     $GLOBALS['comment'] = $comment;
+
 ?>
-    <ol class="comment-list">
-        <li id="comment-<?php comment_ID(); ?>"></li>
-    </ol>
-    <div class="comment-body" id="div-comment-<?php comment_ID(); ?>">
-        <footer class="comment-meta">
-            <div class="comment-author vcard">
-                <img src="" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says">says:</span>
-            </div><!-- .comment-author -->
-            <div class="comment-metadata">
-                <a href="#">
-                    <time datetime="2016-10-21T13:31:45+00:00"><?php comment_date(); ?></time>
-                </a>
-            </div><!-- .comment-metadata -->
-        </footer>
-        <div class="comment-content">
-            <p>
-                <?php comment_text(); ?>
-            </p>
-        </div>
-        <div class="reply">
-            <?php comment_reply_link(array_merge($args, array('depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
-        </div>
-    <?php
+    <li>
+        <div class="comment-body" id="div-comment-<?php comment_ID(); ?>">
+            <footer class="comment-meta">
+                <div class="comment-author vcard">
+                    <img src="" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says"> - says:</span>
+                </div><!-- .comment-author -->
+                <div class="comment-meta-data">
+                    <a href="javascript:void(0);">
+                        <time datetime="2016-10-21T13:31:45+00:00"><?php comment_date(); ?></time>
+                    </a>
+                </div><!-- .comment-metadata -->
+            </footer>
+            <div class="comment-content">
+                <p>
+                    <?php comment_text(); ?>
+                </p>
+            </div>
+            <div class="reply">
+                <?php comment_reply_link(array_merge($args, array('depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
+            </div>
+    </li>
+<?php
 }
+
+// remove anchor tag from the comment time
+/*
+function remove_comment_date_link($date, $comment)
+{
+    return preg_replace('#<a.*?>(.*?)</a>#i', '$1', $date);
+}
+add_filter('get_comment_date', 'remove_comment_date_link', 10, 2);
+*/
+
 
 // for adding and remove author url
 function custom_comment_author_link($link, $author, $comment_ID)
@@ -686,7 +702,7 @@ function custom_comment_author_link($link, $author, $comment_ID)
     } elseif (user_can($user_id, 'customer') || user_can($user_id, 'subscriber')) {
         $link = '<span>' . $author . '</span>'; // Wrap the comment author name in a span
     } else {
-        $link = '<a href="#">' . $author . '</a>'; // Wrap the comment author name in a link with "#" URL
+        $link = '<a href="javascript:void(0);">' . $author . '</a>'; // Wrap the comment author name in a link with "#" URL
     }
 
     return $link;

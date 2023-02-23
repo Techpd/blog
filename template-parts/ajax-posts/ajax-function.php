@@ -80,3 +80,75 @@ function load_posts_by_ajax_callback()
   exit;
 }
 // function for category page load more ajax button end here --------------->
+
+
+// Load more comment ajax admin fucntion 
+// function load_comments_ajax_handler() {
+//   check_ajax_referer('load_more_posts', 'security');
+//   $page = $_GET['page'];
+//   $post_id = $_GET['post_id'];
+//   $comments_per_page = get_option('comments_per_page');
+//   $offset = ($page - 1) * $comments_per_page;
+//   $comments = get_comments(array(
+//       'post_id' => $post_id,
+//       'status' => 'approve',
+//       'number' => $comments_per_page,
+//       'offset' => $offset,
+//       'order' => 'ASC'
+//   ));
+//   $last_page = count($comments) < $comments_per_page;
+//   ob_start();
+//   wp_list_comments(array(
+//       'style' => 'div',
+//       'short_ping' => true,
+//       'avatar_size' => 50,
+//       'callback' => 'my_custom_comments'
+//   ), $comments);
+//   $html = ob_get_clean();
+//   wp_send_json_success(array(
+//       'html' => $html,
+//       'last_page' => $last_page
+//   ));
+// }
+// add_action('wp_ajax_load_comments', 'load_comments_ajax_handler');
+// add_action('wp_ajax_nopriv_load_comments', 'load_comments_ajax_handler');
+
+function my_custom_load_comments() {
+  $post_id = $_POST['post_id'];
+  $page = $_POST['page'];
+  $per_page = $_POST['per_page'];
+  $args = array(
+      'post_id' => $post_id,
+      'status' => 'approve',
+      'orderby' => 'comment_date_gmt',
+      'order' => 'ASC',
+      'offset' => $page * $per_page,
+      'number' => $per_page
+  );
+  $comments = get_comments($args);
+  ob_start();
+  foreach($comments as $comment) {
+      // Output each comment as HTML
+      wp_list_comments(array(
+          'type' => 'comment',
+          'callback' => 'my_comment_callback',
+          'max_depth' => 3,
+          'reverse_top_level' => false
+      ), array($comment), 1);
+  }
+  $output = ob_get_clean();
+  // echo $output;
+  wp_send_json_success($output);
+  wp_die();
+}
+
+add_action('wp_ajax_my_custom_load_comments', 'my_custom_load_comments');
+add_action('wp_ajax_nopriv_my_custom_load_comments', 'my_custom_load_comments');
+
+function my_custom_scripts() {
+  wp_enqueue_script('my-custom-script', get_stylesheet_directory_uri() . '/js/ajax.js', array('jquery'), '1.0', true);
+  wp_localize_script('my-custom-script', 'ajaxurl', admin_url('admin-ajax.php'));
+}
+add_action('wp_enqueue_scripts', 'my_custom_scripts');
+
+// Load more comment ajax admin fucntion  end here ------------------>
