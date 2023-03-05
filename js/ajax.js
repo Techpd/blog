@@ -97,34 +97,35 @@ jQuery(function ($) {
 // });
 // Ajax js for load more comments end here
 
-jQuery(document).ready(function($) {
-    var page = 0;
-    var per_page = 3;
-    $('#load-more-comments').click(function(e) {
-        var post_id = $(this).data('comment-post-id');
-        console.log(post_id);
-        e.preventDefault();
-        page++;
-        $.ajax({
-            url: ajaxurl,
-            type: 'post',
-            dataType: 'json',
-            data: {
-                action: 'my_custom_load_comments',
-                post_id: post_id,
-                page: page,
-                per_page: per_page
-            },
-            beforeSend: function() {
-                $('.load-more-comments').text('Loading...');
-            },
-            success: function(response) {
-                $('.load-more-comments').text('Load More');
-                $('.commentlist').append(response.data);
-                if (response.data == '' || response.data == null || response.data.length < 0) {
-                    $('.load-more-comments').hide();
-                }
-            }
-        });
-    });
-});
+// jQuery(document).ready(function($) {
+//     var page = 0;
+//     var per_page = 3;
+//     $('#load-more-comments').click(function(e) {
+//         var post_id = $(this).data('comment-post-id');
+//         var ajaxurl = $(this).data('ajax-url');
+//         // console.log(post_id);
+//         e.preventDefault();
+//         page++;
+//         $.ajax({
+//             url: ajaxurl,
+//             type: 'post',
+//             dataType: 'json',
+//             data: {
+//                 action: 'my_comment_callback',
+//                 post_id: post_id,
+//                 page: page,
+//                 per_page: per_page
+//             },
+//             beforeSend: function() {
+//                 $('.load-more-comments').text('Loading...');
+//             },
+//             success: function(response) {
+//                 $('.load-more-comments').text('Load More');
+//                 $('.commentlist').append(response.data);
+//                 if (response.data == '' || response.data == null || response.data.length < 0) {
+//                     $('.load-more-comments').hide();
+//                 }
+//             }
+//         });
+//     });
+// });

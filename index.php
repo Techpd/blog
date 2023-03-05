@@ -124,8 +124,28 @@ if (have_posts()) :
                                                             </div>
                                                             <div class="entry-interaction__right">
                                                                 <div class="entry-meta-count flex-box justify-content-end">
-                                                                    <a href="#" class="comments-count" data-toggle="tooltip" data-placement="top" title="" data-original-title="13 Views"><i class="mdicon mdicon-comment-o"></i> <span>4</span></a>
-                                                                    <a href="#" class="view-count" data-toggle="tooltip" data-placement="top" title="" data-original-title="31 Commnent"><i class="mdicon mdicon-visibility"></i> <span>31</span></a>
+                                                                    <?php
+                                                                    $comment_count = get_comments_number();
+                                                                    if ($comment_count > 0) :
+                                                                    ?>
+                                                                        <a href="#" class="comments-count" data-toggle="tooltip" data-placement="top" title="" data-original-title="13 Views">
+                                                                            <i class="mdicon mdicon-comment-o"></i> <span><?php printf(_n('1 Comment', '%s Comments', $comment_count), number_format_i18n($comment_count)); ?></span>
+                                                                        </a>
+                                                                    <?php
+                                                                    endif;
+                                                                    ?>
+                                                                    <a href="#" class="view-count" data-toggle="tooltip" data-placement="top" title="" data-original-title="31 Commnent">
+                                                                        <i class="mdicon mdicon-visibility"></i>
+                                                                        <span>
+                                                                            <?php
+                                                                            custom_post_views();
+                                                                            $postID = get_the_ID();
+                                                                            $count_key = 'custom_post_views_count';
+                                                                            $count = get_post_meta($postID, $count_key, true);
+                                                                            printf(_n('1 view', '%s views', $count), number_format_i18n($count));
+                                                                            ?>
+                                                                        </span>
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -299,68 +319,47 @@ if (have_posts()) :
                                             if (comments_open() || get_comments_number()) {
                                                 comments_template('template-parts/comments/comment-form.php');
                                             }
-                                            $imageFolder_avtars = get_template_directory_uri() . '/img/author-icons/';
-                                            // echo '<h1>' . $imageFolder_avtars . '</h1>';
                                             ?>
-                                            <!-- below script to change commented user avatar image randomly -->
-                                            <script>
-                                                $ = jQuery;
-                                                $(function() {
-                                                    const dir_path = "<?php echo $imageFolder_avtars ?>";
-                                                    const image_files = [];
-
-                                                    fetch(dir_path)
-                                                        .then(response => response.text())
-                                                        .then(html => {
-                                                            const parser = new DOMParser();
-                                                            const doc = parser.parseFromString(html, 'text/html');
-                                                            const links = doc.querySelectorAll('a');
-                                                            links.forEach(link => {
-                                                                if (link.getAttribute('href').match(/\.(webp)$/)) {
-                                                                    const image_url = dir_path + link.getAttribute('href');
-                                                                    image_files.push(image_url);
-                                                                }
-                                                            });
-                                                            $('.commentlist .vcard img').each(function() {
-                                                                const is_admin_avatar = $(this).parent().parent().parent().hasClass('comment-author-admin') && $(this).index() === 0;
-                                                                if (is_admin_avatar) {
-                                                                    $(this).parent().parent().parent().addClass('admin-comment');
-                                                                }
-                                                                if (!is_admin_avatar) {
-                                                                    const random_icon_index = Math.floor(Math.random() * image_files.length);
-                                                                    const random_author_icon = image_files[random_icon_index];
-                                                                    $(this).attr('src', random_author_icon);
-                                                                }
-                                                            });
-
-                                                        });
-                                                    // appending the reply where user click
-                                                    // $(document).on('click', '.comment-reply-link', function(e) {
-                                                    //     e.preventDefault();
-                                                    //     $('#respond').fadeIn();
-                                                    //     $(this).parent().append($('#respond'));
-                                                    // });
-                                                    $(document).on('click', '.comment-reply-link[data-commentid]', function(e) {
-                                                        e.preventDefault();
-                                                        const commentId = $(this).data('commentid');
-                                                        $('#comment_parent').val(commentId);
-                                                        const respondContainer = $('#respond');
-                                                        const currentParent = $(this).parent();
-                                                        if (currentParent.children('#respond').length) {
-                                                            currentParent.children('#respond').remove();
-                                                        } else {
-                                                            respondContainer.fadeIn();
-                                                            currentParent.append(respondContainer);
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-
                                         </div><!-- #comments -->
-                                        <div id="load-more-comments-container">
-                                            <button id="load-more-comments" data-comment-post-id="<?php echo get_the_ID(); ?>" class="comment-btn">Load More Comments</button>
+                                        <div id="leave-new-comment-container">
+                                            <button id="leave-new-comment" data-comment-post-id="<?php echo get_the_ID(); ?>" class="comment-btn">Leave new comment</button>
                                         </div>
                                     </div>
+                                    <!-- below script to append comment form and change text of comment btn -->
+                                    <script>
+                                        $ = jQuery;
+                                        // single line for the wrapping comment edit link with icon
+                                        $('.comment-edit-link').addClass('dashicons dashicons-edit');
+                                        $('.comment-edit-link').text('Edit');
+                                        // single line for the wrapping comment edit link with icon end here
+                                        $(function() {
+                                            const comment_btn = $('#leave-new-comment');
+                                            const comment_btn_text = comment_btn.text();
+                                            const comment_btn_newtext = 'Cancel Leave Comment';
+                                            const respondContainer = $('#respond');
+
+                                            $(document).on('click', '.comment-reply-link, #leave-new-comment', function(e) {
+                                                e.preventDefault();
+                                                const commentId = $(this).data('commentid');
+                                                $('#comment_parent').val(commentId);
+                                                const currentParent = $(this).parent();
+
+                                                if (respondContainer.is(':visible')) {
+                                                    // If respondContainer is visible, hide it and restore the original button text
+                                                    respondContainer.fadeOut(200, function() {
+                                                        comment_btn.text(comment_btn_text);
+                                                        currentParent.children('#respond').remove();
+                                                    });
+                                                } else {
+                                                    // If respondContainer is hidden, show it and change the button text
+                                                    comment_btn.text(comment_btn_newtext);
+                                                    currentParent.append(respondContainer);
+                                                    respondContainer.fadeIn();
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                    <!--below script to append comment form and change text of comment btn -->
                                 <?php
                                 endif;
                                 ?>

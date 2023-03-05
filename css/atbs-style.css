@@ -6199,7 +6199,7 @@ time {
 
 @media (min-width: 768px) {
     .comment-respond {
-        margin: 40px 0 20px;
+        margin: 20px 0 20px;
     }
 }
 
@@ -6258,7 +6258,7 @@ time {
 .comment-form .logged-in-as a:hover,
 .comment-form .logged-in-as a:active,
 .comment-form .logged-in-as a:focus {
-    color: inherit;
+    color: var(--color-primary);
     text-decoration: underline;
 }
 
@@ -6314,7 +6314,7 @@ time {
     margin: 0 -15px;
 }
 [class*='comment-form-'] label{
-    display: none;
+    /* display: none; */
 }
 .comment-notes{
     padding: 0 15px;
@@ -6371,8 +6371,8 @@ time {
 .logged-in-as{
     width: 100%;
     padding: 0px 15px;
-    margin-bottom: 30px;
-    font-size: 15px;
+    margin-bottom: 12px;
+    font-size: 12px;
     opacity: 0.8;
 }
 .comment-form-author, .comment-form-email{
@@ -6480,7 +6480,7 @@ time {
 .comment-form .form-submit input[type="submit"]:focus,
 .comment-form .form-submit input[type="submit"]:hover{
     border: 1px solid var(--color-primary);
-    /*background-color: transparent;*/
+    background-color: transparent;
     color: #222222;
     outline: none;
     color: #fff;
@@ -9084,6 +9084,7 @@ textarea.form-control:focus,
 select:focus,
 select.form-control:focus {
     border: 1px solid var(--color-border);
+    background: var(--background-input);
 }
 
 /* -----------------------------------------------------------------

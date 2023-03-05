@@ -561,7 +561,6 @@ function custom_user_avatar($avatar, $id_or_email, $size, $default, $alt)
 add_filter('get_avatar', 'custom_user_avatar', 10, 5);
 
 // adding custom profile pic for the admin user  end --------------->
-
 function custom_author_name($name)
 {
     $admin = get_users(array('role' => 'administrator', 'number' => 1)); // Get the first administrator user
@@ -614,77 +613,10 @@ add_filter('get_comment_author', 'custom_comment_author_name');
 require_once get_template_directory() . '/template-parts/ajax-posts/ajax-function.php';
 // end of including ajax on home page
 
-// create nested comment system 
-// function theme_prefix_setup()
-// {
-//     add_theme_support('nested-comments');
-// }
-// add_action('after_setup_theme', 'theme_prefix_setup');
-
-
-$args = array(
-    'walker'            => null,
-    'max_depth'         => 3, // change the value as per your requirement
-    'style'             => 'div',
-    'callback'          => 'my_comment_callback',
-    'end-callback'      => null,
-    'type'              => 'all',
-    'reply_text'        => 'Reply',
-    'page'              => 1, // add the page parameter and set it to 1
-    'per_page'          => 3, // add the per_page parameter and set it to 3
-    'avatar_size'       => 80,
-    'reverse_top_level' => true,
-    'reverse_children'  => true,
-    'format'            => 'html5',
-    'short_ping'        => false,
-    'echo'              => false, // set echo to false to return comments instead of echoing them
-);
-if (!isset($_POST['action']) || $_POST['action'] !== 'load_comments') {
-    wp_list_comments($args);
-} else {
-    $comments = get_comments($args);
-    wp_send_json($comments);
-}
-
-
-function my_comment_callback($comment, $args, $depth)
-{
-    $GLOBALS['comment'] = $comment;
-
-?>
-    <li>
-        <div class="comment-body" id="div-comment-<?php comment_ID(); ?>">
-            <footer class="comment-meta">
-                <div class="comment-author vcard">
-                    <img src="" class="avatar photo" alt="avatar"><b class="fn"><?php comment_author(); ?></b><span class="says"> - says:</span>
-                </div><!-- .comment-author -->
-                <div class="comment-meta-data">
-                    <a href="javascript:void(0);">
-                        <time datetime="2016-10-21T13:31:45+00:00"><?php comment_date(); ?></time>
-                    </a>
-                </div><!-- .comment-metadata -->
-            </footer>
-            <div class="comment-content">
-                <p>
-                    <?php comment_text(); ?>
-                </p>
-            </div>
-            <div class="reply">
-                <?php comment_reply_link(array_merge($args, array('depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
-            </div>
-    </li>
-<?php
-}
-
-// remove anchor tag from the comment time
-/*
-function remove_comment_date_link($date, $comment)
-{
-    return preg_replace('#<a.*?>(.*?)</a>#i', '$1', $date);
-}
-add_filter('get_comment_date', 'remove_comment_date_link', 10, 2);
+/* ============================================================================================
+   Comment section code start here
+   ============================================================================================
 */
-
 
 // for adding and remove author url
 function custom_comment_author_link($link, $author, $comment_ID)
@@ -711,35 +643,22 @@ add_filter('get_comment_author_link', 'custom_comment_author_link', 10, 3);
 
 // for adding and remove author url end here--------------->
 
-function my_theme_setup()
-{
-    add_theme_support('threaded-comments');
-    if (is_singular() && comments_open() && get_option('thread_comments')) {
-        wp_enqueue_script('comment-reply');
+/* ============================================================================================
+   Comment section code end here
+   ============================================================================================
+*/
+// post views counter 
+function custom_post_views() {
+    $postID = get_the_ID();
+    $count_key = 'custom_post_views_count';
+    $count = get_post_meta($postID, $count_key, true);
+    if($count==''){
+        $count = 1;
+        add_post_meta($postID, $count_key, '1');
+    }else{
+        $count++;
+        update_post_meta($postID, $count_key, $count);
     }
 }
-add_action('after_setup_theme', 'my_theme_setup');
-function remove_comment_count_title($output, $number)
-{
-    // Return an empty string to remove the comment count and title
-    return '';
-}
-add_filter('comments_number', 'remove_comment_count_title', 10, 2);
 
-
-function add_admin_to_comment_reply_link($link, $args, $comment, $post)
-{
-    // Check if the user is logged in and has the 'administrator' role
-    if (is_user_logged_in() && current_user_can('administrator')) {
-        // Get the parent comment ID for the reply
-        $parent_id = $comment->comment_parent ? $comment->comment_parent : $comment->comment_ID;
-
-        // Add the 'data-user-id' attribute to the reply link with the admin user ID
-        $link = str_replace('data-replyto="0"', 'data-replyto="' . $parent_id . '" data-user-id="1"', $link);
-    }
-
-    return $link;
-}
-add_filter('comment_reply_link', 'add_admin_to_comment_reply_link', 10, 4);
-
-// create nested comment system  -------------end here--------------> 
+// post views counter  end here --------->
