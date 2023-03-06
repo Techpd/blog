@@ -221,20 +221,18 @@ if (have_posts()) :
                                                 <div class="single-box-translate js-sticky-sidebar">
                                                     <div class="entry-meta">
                                                         <?php
-                                                        // check if user is an admin
-
                                                         // get the ACF field value for the current user
-                                                        $image = get_field('profile_pic_upload');
-                                                        if ($image) {
-                                                            $image_url = $image['url'];
-                                                            // output the image using the image URL
-                                                            echo '<img src="' . $image_url . '" alt="Profile Image">';
+                                                        $post_author_id = get_post_field('post_author', get_the_ID());
+                                                        $post_author = get_userdata($post_author_id);
+                                                        if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+                                                            $author_profile_image = get_field('profile_pic_upload', 'user_' . $post_author_id);
                                                         }
                                                         ?>
                                                         <div class="entry-author entry-author_style-1">
                                                             <a class="entry-author__avatar" href="<?php echo $author_url; ?>" title="Posts by <?php echo $author_name; ?>" rel="author">
-                                                                <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php //echo $image_url; 
-                                                                                                                                                                ?>">
+                                                                <?php if ($author_profile_image) : ?>
+                                                                    <img alt="author-<?php echo $author_name; ?>-image" src="<?php echo $placeholder; ?>" data-src="<?php echo $author_profile_image; ?>">
+                                                                <?php endif; ?>
                                                             </a>
                                                             <div class="entry-author__text">
                                                                 <a class="entry-author__name" title="Posts by <?php echo $author_name; ?>" rel="author" href="<?php echo $author_url; ?>"><?php echo $author_name; ?></a>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 get_header();
 // global $authordata;
 $placeholder = get_template_directory_uri() . '/img/placeholder.webp';
@@ -23,7 +23,7 @@ if (have_rows('page_builder')) {
     ?>
     <div class="breadcrumbs">
         <?php //echo my_breadcrumbs();
-        do_action( 'breadcrumbs' );
+        do_action('breadcrumbs');
         ?>
     </div>
 
@@ -57,9 +57,15 @@ if (have_rows('page_builder')) {
                                 }
                                 // author detail
                                 $author_id = get_the_author_meta('ID');
-                                $author_avatar = get_avatar_url($author_id, ['size' => '96']);
+                                // $author_avatar = get_avatar_url($author_id, ['size' => '96']);
                                 $author_name = get_the_author_meta('display_name', $author_id);
                                 $author_url = get_author_posts_url($author_id);
+                                // get the ACF field value for the current user
+                                $post_author_id = get_post_field('post_author', get_the_ID());
+                                $post_author = get_userdata($post_author_id);
+                                if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+                                    $author_avatar = get_field('profile_pic_upload', 'user_' . $post_author_id);
+                                }
                         ?>
                                 <article class="post post--overlay post--overlay-middle post--overlay-large post--overlay-height-680 post--overlay-padding-lg">
                                     <div class="post__thumb post__thumb--overlay atbs-thumb-object-fit">
@@ -103,11 +109,7 @@ if (have_rows('page_builder')) {
                         ?>
                     </div>
                     <div class="section-sub">
-                        <div class="owl-carousel js-atbs-carousel-4i30m atbs-carousel dots-circle dots-white" 
-                        data-carousel-loop="<?php echo $data_carousel_loop; ?>"
-                        data-auto-play="<?php echo $data_auto_play; ?>"
-                        data-carousel-autoplay-time="<?php echo $data_carousel_autoplay_time; ?>"
-                        >
+                        <div class="owl-carousel js-atbs-carousel-4i30m atbs-carousel dots-circle dots-white" data-carousel-loop="<?php echo $data_carousel_loop; ?>" data-auto-play="<?php echo $data_auto_play; ?>" data-carousel-autoplay-time="<?php echo $data_carousel_autoplay_time; ?>">
                             <?php
                             $sticky = get_option('sticky_posts');
                             // display only sticky posts
@@ -202,7 +204,11 @@ if (have_rows('page_builder')) {
                                 $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'single-post-thumbnail');
                                 // author detail
                                 $author_id = get_the_author_meta('ID');
-                                $author_avatar = get_avatar_url($author_id, ['size' => '96']);
+                                $post_author_id = get_post_field('post_author', get_the_ID());
+                                $post_author = get_userdata($post_author_id);
+                                if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+                                    $author_avatar = get_field('profile_pic_upload', 'user_' . $post_author_id);
+                                }
                                 $author_name = get_the_author_meta('display_name', $author_id);
                                 $author_url = get_author_posts_url($author_id);
 
@@ -294,7 +300,11 @@ if (have_rows('page_builder')) {
                                             $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'single-post-thumbnail');
                                             // author detail
                                             $author_id = get_the_author_meta('ID');
-                                            $author_avatar = get_avatar_url($author_id, ['size' => '96']);
+                                            $post_author_id = get_post_field('post_author', get_the_ID());
+                                            $post_author = get_userdata($post_author_id);
+                                            if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+                                                $author_avatar = get_field('profile_pic_upload', 'user_' . $post_author_id);
+                                            }
                                             $author_name = get_the_author_meta('display_name', $author_id);
                                             $author_url = get_author_posts_url($author_id);
 
@@ -422,7 +432,11 @@ if (have_rows('page_builder')) {
                                         $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'single-post-thumbnail');
                                         // author detail
                                         $author_id = get_the_author_meta('ID');
-                                        $author_avatar = get_avatar_url($author_id, ['size' => '96']);
+                                        $post_author_id = get_post_field('post_author', get_the_ID());
+                                        $post_author = get_userdata($post_author_id);
+                                        if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+                                            $author_avatar = get_field('profile_pic_upload', 'user_' . $post_author_id);
+                                        }
                                         $author_name = get_the_author_meta('display_name', $author_id);
                                         $author_url = get_author_posts_url($author_id);
 
