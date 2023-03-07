@@ -18,7 +18,12 @@ if (have_posts()) :
 
         // author details
         $author_id = get_the_author_meta('ID');
-        $author_avatar = get_avatar_url($author_id, ['size' => '96']);
+        // get the ACF field value for the current user
+        $post_author_id = get_post_field('post_author', get_the_ID());
+        $post_author = get_userdata($post_author_id);
+        if (in_array('administrator', $post_author->roles) || in_array('author', $post_author->roles)) {
+            $author_avatar = get_field('profile_pic_upload', 'user_' . $post_author_id);
+        }
         $author_name = get_the_author_meta('display_name', $author_id);
         $author_url = get_author_posts_url($author_id);
 ?>
@@ -44,73 +49,11 @@ if (have_posts()) :
                                         <div class="single-body entry-content typography-copy">
                                             <div class="single-row">
                                                 <div class="single-presentation">
-                                                    <p>Set to launch on the manufacturer’s new A330neo aircraft in 2017, it’s offering
-                                                        lots of extra space, including wider seats as standard, no control boxes under
-                                                        seats for the in-flight entertainment system, which means it’s all open for you
-                                                        to stretch your legs.
-                                                    </p>
-                                                    <figure data-shortcode="caption" class="wp-caption alignnone atbs-post-media-wide">
-                                                        <img class="wp-image-7 size-full" src="<?php echo $placeholder; ?>" data-src="<?php echo $featured_image[0]; ?>" alt="Post image">
-                                                    </figure>
-                                                    <p>Set to launch on the manufacturer’s new A330neo aircraft in 2017, it’s offering
-                                                        lots of extra space, including wider seats as standard, no control boxes under
-                                                        seats for the in-flight entertainment system, which means it’s all open for you
-                                                        to stretch your legs.
-                                                    </p>
-                                                    <p>The planes will offer improved built-in broadband connectivity that’ll allow
-                                                        passengers to use their phones and tablets as normal, even making calls and
-                                                        sending and receiving text messages. Lorem ipsum dolor sit amet, consectetur
-                                                        adipisicing elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis numquam
-                                                        pariatur quia velit?</p>
-                                                    <h3>Features</h3>
-                                                    <p> Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.
-                                                    </p>
-                                                    <blockquote>
-                                                        <p>I am enough of an artist to draw freely upon my imagination. Imagination is more important than knowledge. Knowledge is limited. Imagination encircles the world.</p>
-                                                        <footer>
-                                                            <cite>Albert Einstein</cite>
-                                                        </footer>
-                                                    </blockquote>
-                                                    <p>The planes will offer improved built-in broadband connectivity that’ll allow
-                                                        passengers to use their phones and tablets as normal, even making calls and
-                                                        sending and receiving text messages. Lorem ipsum dolor sit amet, consectetur
-                                                        adipisicing elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis numquam
-                                                        pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                        elit. Facilis numquam pariatur quia velit? Aliquam asperiores
-                                                        commodi consequatur delectus iusto nisi non, nostrum quaerat quo quos rerum
-                                                        saepe sit vero voluptates.
-                                                    </p>
+                                                    <!-- content from the wordpres post editor -->
+                                                    <?php
+                                                    the_content();
+                                                    ?>
+                                                    <!-- content from the wordpres post editor -->
                                                     <footer class="single-footer entry-footer">
                                                         <div class="entry-interaction entry-interaction--horizontal">
                                                             <div class="entry-interaction__left">
@@ -152,24 +95,31 @@ if (have_posts()) :
                                                     </footer>
                                                     <div class="author-box">
                                                         <div class="author-avatar">
-                                                            <img alt="Ryan Reynold" src="http://via.placeholder.com/150x150" class="avatar photo">
+                                                            <img alt="Ryan Reynold" src="<?php echo $placeholder; ?>" data-src="<?php echo $author_avatar; ?>" class="avatar photo">
                                                         </div>
                                                         <div class="author-box__text">
                                                             <div class="author-name">
-                                                                <a href="./author.html" class="entry-author__name">Ryan Reynold</a>
+                                                                <a href="./author.html" class="entry-author__name"><?php echo $author_name; ?></a>
                                                             </div>
                                                             <div class="author-bio">
-                                                                A 26-year-old health centre receptionist who enjoys going to the movies, photography and social media.
+                                                                <?php
+                                                                $current_author_id = get_the_author_meta('ID');
+                                                                $current_author_bio = get_the_author_meta('description', $current_author_id);
+
+                                                                if (!empty($current_author_bio)) {
+                                                                    echo  wpautop($current_author_bio);
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <ul class="author-social list-unstyled list-horizontal">
                                                                 <li>
                                                                     <a href="#"><i class="mdicon mdicon-facebook"></i></a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="#"><i class="mdicon mdicon-twitter"></i></a>
+                                                                    <a href="#"><i class="mdicon mdicon-instagram"></i></a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="#"><i class="mdicon mdicon-instagram"></i></a>
+                                                                    <a href="#"><i class="mdicon mdicon-mail_outline"></i></a>
                                                                 </li>
                                                             </ul>
                                                         </div>
