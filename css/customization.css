@@ -175,14 +175,14 @@ ul.children {
 /* admin comment reply css ---------------------------------> */
 .comment-author-admin {
   position: relative;
-  border-bottom: 1px solid grey;
-  margin-bottom: 20px;
+  /* border-bottom: 1px solid grey; */
+  /* margin-bottom: 20px; */
 }
 
 .comment-author-admin:before {
   content: '';
   position: absolute;
-  top: 0;
+  top: 8px;
   left: 45%;
   transform: translateX(-50%);
   height: 2px;
@@ -200,7 +200,7 @@ ul.children {
   border-color: var(--color-primary);
   border-radius: 5px 5px 0 0;
   margin-bottom: 10px;
-  padding-left: 15px;
+  /* padding-left: 15px; */
 }
 
 /* .comment-author-admin> :first-child::before {
@@ -216,13 +216,13 @@ ul.children {
 } */
 
 /* trianlge */
-.comment-author-admin> :first-child:after {
+.comment-author-admin:after {
   content: '';
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid var(--color-primary);
   position: absolute;
-  top: -10px;
+  top: 0;
   left: 40%;
 }
 /* trianlge end here*/
@@ -235,8 +235,8 @@ ul.children {
   padding-bottom: 10px;
 } */
 .comment-body {
-  border-bottom: 1px solid rgba(187, 187, 187,0.5);
-  padding-bottom: 10px;
+  /* border-bottom: 1px solid rgba(187, 187, 187,0.5); */
+  /* padding-bottom: 10px; */
 }
 .commentlist > .comment > .comment-body:first-child {
   border-top: 1px solid rgba(187, 187, 187,0.5);
@@ -285,12 +285,14 @@ div#respond {
   justify-content: center;
   flex-wrap: wrap;
 }
-.comment-btn {
+.comment-btn,
+.comments-order-button  {
   background: var(--color-primary);
   padding: 5px 20px;
   border-radius: 5px;
 }
-.comment-btn:hover {
+.comment-btn:hover,
+.comments-order-button:hover{
   background: var(--color-secondary);
   color: rgba(85, 85, 85, 0.8);
 }
@@ -302,6 +304,22 @@ div#respond {
   background: var(--color-secondary);
   color: rgb(255, 255, 255);
 }
+
+/* comments order btn css */
+.comments-order-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.comments-order-toggle .post__cat{
+  text-decoration: none;
+}
+.comments-order-button.active{
+  background: var(--color-secondary);
+  cursor: not-allowed;
+}
+/* comments order btn css end here --------------------------------->*/
 
 
 /* media queries */

@@ -1,4 +1,5 @@
 <?php
+$placeholder = get_template_directory_uri() . '/img/placeholder.webp';
 $admin_author = get_template_directory_uri() . '../img/admin-author.png';
 ?>
 <div class="atbs-section-sidebar js-sticky-sidebar">

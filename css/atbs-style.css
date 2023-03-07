@@ -5949,9 +5949,10 @@ time {
 
 .comments-title {
     margin: 0 0 0 0;
-    padding-top: 20px;
+    padding-bottom: 20px;
     border-top: 2px solid rgba(0, 0, 0, 0.05);
-    color: rgba(0, 0, 0, 0.8);
+    color: var(--color-title);
+    font-size: 2rem;
 }
 
 .comments-title:before {
@@ -5959,7 +5960,7 @@ time {
     margin-right: 0.4em;
     font-family: 'mdicon';
     font-weight: 400;
-    color: rgba(0, 0, 0, 0.4);
+    color: var(--color-title);
     font-size: 1.2em;
     vertical-align: middle;
 }
@@ -6087,7 +6088,7 @@ time {
 }
 
 .children .comment-body {
-    margin-left: 55px;
+    /* margin-left: 55px; */
 }
 
 .comment-metadata {

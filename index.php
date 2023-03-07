@@ -315,7 +315,7 @@ if (have_posts()) :
                                             </div>
                                             <?php
                                             if (comments_open() || get_comments_number()) {
-                                                comments_template('template-parts/comments/comment-form.php');
+                                                comments_template();
                                             }
                                             ?>
                                         </div><!-- #comments -->
@@ -327,8 +327,8 @@ if (have_posts()) :
                                     <script>
                                         $ = jQuery;
                                         // single line for the wrapping comment edit link with icon
-                                        $('.comment-edit-link').addClass('dashicons dashicons-edit');
-                                        $('.comment-edit-link').text('Edit');
+                                        $('.comment-edit-link').addClass('mdi mdi-pencil');
+                                        $('.comment-edit-link').text('\u00A0Edit');
                                         // single line for the wrapping comment edit link with icon end here
                                         $(function() {
                                             const comment_btn = $('#leave-new-comment');

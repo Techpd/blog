@@ -30,7 +30,7 @@ if ($categories) :
                 <article class="post post--horizontal post--horizontal-middle post--horizontal-card-space flex-box post--hover-theme">
                     <div class="post__thumb object-fit b-r-5 post__thumb-radius">
                         <a href="<?php echo $cat_link; ?>">
-                            <img src="<?php echo $placeholder; ?>" data-src="<?php echo $image_url; ?>" alt="<?php echo $image['alt']; ?>">
+                            <img src="<?php echo $placeholder; ?>" data-src="<?php echo $image_url; ?>" alt="<?php //echo $image['alt']; ?>">
                         </a>
                     </div>
                     <div class="post__text inverse-text">

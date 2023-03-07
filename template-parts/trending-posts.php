@@ -1,4 +1,5 @@
 <?php
+$placeholder = get_template_directory_uri() . '/img/placeholder.webp';
 $args = array(
     'post_type' => 'post',
     'posts_per_page' => 3,

@@ -105,6 +105,7 @@ if (have_rows('page_builder')) {
                         <?php
                             endwhile;
                             wp_reset_postdata();
+                            wp_reset_query();
                         endif;
                         ?>
                     </div>
@@ -174,6 +175,7 @@ if (have_rows('page_builder')) {
                             <?php
                                 endwhile;
                                 wp_reset_postdata();
+                                wp_reset_query();
                             endif; ?>
                         </div>
                     </div>
@@ -270,6 +272,7 @@ if (have_rows('page_builder')) {
                         <?php
                             endwhile;
                             wp_reset_postdata();
+                            wp_reset_query();
                         endif;
                         ?>
                     </div>
@@ -350,6 +353,7 @@ if (have_rows('page_builder')) {
                                     <?php
                                         endwhile;
                                         wp_reset_postdata();
+                                        wp_reset_query();
                                     endif;
                                     ?>
                                 </div>
@@ -421,9 +425,10 @@ if (have_rows('page_builder')) {
                                 <?php
                                 $args = array(
                                     'post_type' => 'post',
-                                    'posts_per_page' => 2,
+                                    'posts_per_page' => 3,
                                     'orderby' => 'comment_count',
                                     'order' => 'DESC',
+                                    'no_found_rows' => true
                                 );
                                 $query = new WP_Query($args);
                                 if ($query->have_posts()) :
@@ -482,8 +487,8 @@ if (have_rows('page_builder')) {
                                         </div>
                                 <?php
                                     endwhile;
-                                    wp_reset_postdata();
                                 endif;
+                                wp_reset_postdata();
                                 ?>
                             </div>
                         </div>

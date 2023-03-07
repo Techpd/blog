@@ -643,6 +643,17 @@ add_filter('get_comment_author_link', 'custom_comment_author_link', 10, 3);
 
 // for adding and remove author url end here--------------->
 
+// for changing the order of comments
+function set_comments_order($comments) {
+    if (isset($_GET['comment_order'])) {
+        update_option('comment_order', $_GET['comment_order']);
+    }
+    return $comments;
+}
+add_filter('comments_array', 'set_comments_order');
+
+// for changing the order of comments end here ----------->
+
 /* ============================================================================================
    Comment section code end here
    ============================================================================================
