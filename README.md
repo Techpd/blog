@@ -14,7 +14,7 @@ I’ve always been a great problem solver, an independent introvert, and a techn
 
 I started learning to code when I was a teenager, though it was always more of a hobby than a career focus. After a college education in Computer Application, and continuing to pursue that hobby, I realized software engineering was the right field for me.
 
-Since then, I’ve worked on countless freelance projects and have been involved with a handful of notable startups. Today, I’m working as a Senior developer with the amazing team at IQuinceSoft, Inc., and am getting into Advance web development using React on my own time.
+Since then, I’ve worked on countless freelance projects and have been involved with a handful of notable startups. Today, I’m working as a Senior developer with the amazing team at Kilowott Inc., and am getting into Advance web development using React on my own time.
 
 I’m familiar with a variety of markup language, style sheet , Frameworks, Libraries and programming languages, including HTML 5, CSS 3, JavaScript ,jQuery, React but I’m always adding new skills to my repertoire. I’m also eager to meet other software engineers in the area, so feel free to connect!
 
