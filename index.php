@@ -95,7 +95,7 @@ if (have_posts()) :
                                                     </footer>
                                                     <div class="author-box">
                                                         <div class="author-avatar">
-                                                            <img alt="Ryan Reynold" src="<?php echo $placeholder; ?>" data-src="<?php echo $author_avatar; ?>" class="avatar photo">
+                                                            <img alt="<?php echo $author_name; ?>" src="<?php echo $placeholder; ?>" data-src="<?php echo $author_avatar; ?>" class="avatar photo">
                                                         </div>
                                                         <div class="author-box__text">
                                                             <div class="author-name">
@@ -126,45 +126,77 @@ if (have_posts()) :
                                                     </div>
                                                     <div class="posts-navigation-wrap">
                                                         <div class="posts-navigation flex-box flex-box-2i">
-                                                            <div class="posts-navigation__prev">
-                                                                <article class="post post--horizontal post--horizontal-middle post--horizontal-reverse post--horizontal-xs post__thumb--width-100 post__thumb-100">
-                                                                    <div class="post__thumb atbs-thumb-object-fit">
-                                                                        <a href="./single-1.html"><img src="http://via.placeholder.com/150x150" alt="File Not Found"></a>
-                                                                    </div>
-                                                                    <div class="post__text text-right">
-                                                                        <a class="posts-navigation__label" href="./single-1.html">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="11.999" height="6.545" viewBox="0 0 11.999 6.545">
-                                                                                <path d="M11.454,78.818H1.862l1.8,1.8a.545.545,0,1,1-.771.771L.16,78.658a.545.545,0,0,1,0-.771L2.887,75.16a.545.545,0,1,1,.771.771l-1.8,1.8h9.591a.545.545,0,1,1,0,1.091Z" transform="translate(0 -75)" fill="#222" />
-                                                                            </svg>
-                                                                            <span>previous</span>
-                                                                        </a>
-                                                                        <h3 class="post__title f-18 f-w-500 atbs-line-limit atbs-line-limit-3 m-b-10"><a href="./single-1.html">Life Is Too Important to Be Taken Seriously</a></h3>
-                                                                        <div class="post__meta time-style-1">
-                                                                            <time class="time published" datetime="2019-03-06T08:45:23+00:00" title="March 6, 2019 at 8:45 am">March 6, 2019</time>
+                                                            <?php
+                                                            $categories = get_the_category();
+                                                            $category = $categories[0]->cat_ID;
+
+                                                            $args = array(
+                                                                'category' => $category,
+                                                                'orderby' => 'post_date',
+                                                                'order' => 'ASC',
+                                                                'posts_per_page' => -1,
+                                                            );
+
+                                                            $posts_query = new WP_Query($args);
+
+                                                            $current_post_id = get_the_ID();
+                                                            $current_post_index = -1;
+
+                                                            // Find current post index in query
+                                                            foreach ($posts_query->posts as $i => $post) {
+                                                                if ($post->ID == $current_post_id) {
+                                                                    $current_post_index = $i;
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            $prev_post = ($current_post_index > 0) ? $posts_query->posts[$current_post_index - 1] : null;
+                                                            $next_post = ($current_post_index < count($posts_query->posts) - 1) ? $posts_query->posts[$current_post_index + 1] : null;
+
+                                                            ?>
+                                                            <?php if ($prev_post) { ?>
+                                                                <div class="posts-navigation__prev">
+                                                                    <article class="post post--horizontal post--horizontal-middle post--horizontal-reverse post--horizontal-xs post__thumb--width-100 post__thumb-100">
+                                                                        <div class="post__thumb atbs-thumb-object-fit">
+                                                                            <a href="<?php echo get_permalink($prev_post->ID); ?>"><img src="<?php echo $placeholder; ?>" data-src="<?php echo get_the_post_thumbnail_url($prev_post->ID, 'thumbnail'); ?>" alt="<?php echo get_the_title($prev_post->ID); ?>"></a>
                                                                         </div>
-                                                                    </div>
-                                                                </article>
-                                                            </div>
+                                                                        <div class="post__text text-right">
+                                                                            <a class="posts-navigation__label" href="<?php echo get_permalink($prev_post->ID); ?>">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="11.999" height="6.545" viewBox="0 0 11.999 6.545">
+                                                                                    <path d="M11.454,78.818H1.862l1.8,1.8a.545.545,0,1,1-.771.771L.16,78.658a.545.545,0,0,1,0-.771L2.887,75.16a.545.545,0,1,1,.771.771l-1.8,1.8h9.591a.545.545,0,1,1,0,1.091Z" transform="translate(0 -75)" fill="#222" />
+                                                                                </svg>
+                                                                                <span>previous</span>
+                                                                            </a>
+                                                                            <h3 class="post__title f-18 f-w-500 atbs-line-limit atbs-line-limit-3 m-b-10"><a href="<?php echo get_permalink($prev_post->ID); ?>"><?php echo get_the_title($prev_post->ID); ?></a></h3>
+                                                                            <div class="post__meta time-style-1">
+                                                                                <time class="time published" datetime="<?php echo get_the_date('c', $prev_post->ID); ?>" title="<?php echo get_the_date('', $prev_post->ID); ?>"><?php echo get_the_date('', $prev_post->ID); ?></time>
+                                                                            </div>
+                                                                        </div>
+                                                                    </article>
+                                                                </div>
+                                                            <?php } ?>
                                                             <!-- posts-navigation__prev-->
-                                                            <div class="posts-navigation__next clearfix">
-                                                                <article class="post post--horizontal post--horizontal-middle post--horizontal-xs post__thumb--width-100 post__thumb-100">
-                                                                    <div class="post__thumb atbs-thumb-object-fit">
-                                                                        <a href="./single-1.html"><img src="http://via.placeholder.com/150x150" alt="File Not Found"></a>
-                                                                    </div>
-                                                                    <div class="post__text text-left">
-                                                                        <a class="posts-navigation__label text-left" href="./single-1.html">
-                                                                            <span>next</span>
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="11.999" height="6.545" viewBox="0 0 11.999 6.545">
-                                                                                <path d="M.545,78.818h9.591l-1.8,1.8a.545.545,0,1,0,.771.771l2.727-2.727a.545.545,0,0,0,0-.771L9.112,75.16a.545.545,0,1,0-.771.771l1.8,1.8H.545a.545.545,0,1,0,0,1.091Z" transform="translate(0 -75)" fill="#222" opacity="0.8" />
-                                                                            </svg>
-                                                                        </a>
-                                                                        <h3 class="post__title f-18 f-w-500 atbs-line-limit atbs-line-limit-3 m-b-10"><a href="./single-1.html">Life Is Too Important to Be Taken Seriously</a></h3>
-                                                                        <div class="post__meta time-style-1">
-                                                                            <time class="time published" datetime="2019-03-06T08:45:23+00:00" title="March 6, 2019 at 8:45 am">March 6, 2019</time>
+                                                            <?php if ($next_post) { ?>
+                                                                <div class="posts-navigation__next clearfix">
+                                                                    <article class="post post--horizontal post--horizontal-middle post--horizontal-xs post__thumb--width-100 post__thumb-100">
+                                                                        <div class="post__thumb atbs-thumb-object-fit">
+                                                                            <a href="<?php echo get_permalink($next_post->ID); ?>"><img src="<?php echo $placeholder; ?>" data-src="<?php echo get_the_post_thumbnail_url($next_post->ID, 'thumbnail'); ?>" alt="<?php echo get_the_title($next_post->ID); ?>"></a>
                                                                         </div>
-                                                                    </div>
-                                                                </article>
-                                                            </div><!-- posts-navigation__next -->
+                                                                        <div class="post__text text-left">
+                                                                            <a class="posts-navigation__label text-left" href="<?php echo get_permalink($next_post->ID); ?>">
+                                                                                <span>next</span>
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="11.999" height="6.545" viewBox="0 0 11.999 6.545">
+                                                                                    <path d="M.545,78.818h9.591l-1.8,1.8a.545.545,0,1,0,.771.771l2.727-2.727a.545.545,0,0,0,0-.771L9.112,75.16a.545.545,0,1,0-.771.771l1.8,1.8H.545a.545.545,0,1,0,0,1.091Z" transform="translate(0 -75)" fill="#222" opacity="0.8" />
+                                                                                </svg>
+                                                                            </a>
+                                                                            <h3 class="post__title f-18 f-w-500 atbs-line-limit atbs-line-limit-3 m-b-10"><a href="<?php echo get_permalink($next_post->ID); ?>">Life Is Too Important to Be Taken Seriously</a></h3>
+                                                                            <div class="post__meta time-style-1">
+                                                                                <time class="time published" datetime="<?php echo get_the_date('c', $next_post->ID); ?>" title="<?php echo get_the_date('', $next_post->ID); ?>"><?php echo get_the_date('', $next_post->ID); ?></time>
+                                                                            </div>
+                                                                        </div>
+                                                                    </article>
+                                                                </div><!-- posts-navigation__next -->
+                                                            <?php } ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -192,53 +224,9 @@ if (have_posts()) :
                                                     </div>
                                                     <div class="socials-share-box">
                                                         <span class="social-share-label">Share</span>
-                                                        <ul class="social-list">
-                                                            <li class="facebook-share">
-                                                                <a class="sharing-btn sharing-btn-primary facebook-btn facebook-theme-bg-hover" data-placement="top" title="Share on Facebook" href="#">
-                                                                    <div class="share-item__icon">
-                                                                        <svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
-                                                                            <g>
-                                                                                <path d="m21.7 16.7h5v5h-5v11.6h-5v-11.6h-5v-5h5v-2.1c0-2 0.6-4.5 1.8-5.9 1.3-1.3 2.8-2 4.7-2h3.5v5h-3.5c-0.9 0-1.5 0.6-1.5 1.5v3.5z"></path>
-                                                                            </g>
-                                                                        </svg>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
-                                                            <li class="twitter-share">
-                                                                <a class="sharing-btn sharing-btn-primary twitter-btn twitter-theme-bg-hover" data-placement="top" title="Share on Twitter" href="#">
-                                                                    <div class="share-item__icon">
-                                                                        <svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
-                                                                            <g>
-                                                                                <path d="m31.5 11.7c1.3-0.8 2.2-2 2.7-3.4-1.4 0.7-2.7 1.2-4 1.4-1.1-1.2-2.6-1.9-4.4-1.9-1.7 0-3.2 0.6-4.4 1.8-1.2 1.2-1.8 2.7-1.8 4.4 0 0.5 0.1 0.9 0.2 1.3-5.1-0.1-9.4-2.3-12.7-6.4-0.6 1-0.9 2.1-0.9 3.1 0 2.2 1 3.9 2.8 5.2-1.1-0.1-2-0.4-2.8-0.8 0 1.5 0.5 2.8 1.4 4 0.9 1.1 2.1 1.8 3.5 2.1-0.5 0.1-1 0.2-1.6 0.2-0.5 0-0.9 0-1.1-0.1 0.4 1.2 1.1 2.3 2.1 3 1.1 0.8 2.3 1.2 3.6 1.3-2.2 1.7-4.7 2.6-7.6 2.6-0.7 0-1.2 0-1.5-0.1 2.8 1.9 6 2.8 9.5 2.8 3.5 0 6.7-0.9 9.4-2.7 2.8-1.8 4.8-4.1 6.1-6.7 1.3-2.6 1.9-5.3 1.9-8.1v-0.8c1.3-0.9 2.3-2 3.1-3.2-1.1 0.5-2.3 0.8-3.5 1z"></path>
-                                                                            </g>
-
-                                                                        </svg>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
-                                                            <li class="pinterest-share">
-                                                                <a class="sharing-btn pinterest-btn pinterest-theme-bg-hover" data-placement="top" title="Share on Pinterest" href="#">
-                                                                    <div class="share-item__icon">
-                                                                        <svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
-                                                                            <g>
-                                                                                <path d="m37.3 20q0 4.7-2.3 8.6t-6.3 6.2-8.6 2.3q-2.4 0-4.8-0.7 1.3-2 1.7-3.6 0.2-0.8 1.2-4.7 0.5 0.8 1.7 1.5t2.5 0.6q2.7 0 4.8-1.5t3.3-4.2 1.2-6.1q0-2.5-1.4-4.7t-3.8-3.7-5.7-1.4q-2.4 0-4.4 0.7t-3.4 1.7-2.5 2.4-1.5 2.9-0.4 3q0 2.4 0.8 4.1t2.7 2.5q0.6 0.3 0.8-0.5 0.1-0.1 0.2-0.6t0.2-0.7q0.1-0.5-0.3-1-1.1-1.3-1.1-3.3 0-3.4 2.3-5.8t6.1-2.5q3.4 0 5.3 1.9t1.9 4.7q0 3.8-1.6 6.5t-3.9 2.6q-1.3 0-2.2-0.9t-0.5-2.4q0.2-0.8 0.6-2.1t0.7-2.3 0.2-1.6q0-1.2-0.6-1.9t-1.7-0.7q-1.4 0-2.3 1.2t-1 3.2q0 1.6 0.6 2.7l-2.2 9.4q-0.4 1.5-0.3 3.9-4.6-2-7.5-6.3t-2.8-9.4q0-4.7 2.3-8.6t6.2-6.2 8.6-2.3 8.6 2.3 6.3 6.2 2.3 8.6z"></path>
-                                                                            </g>
-                                                                        </svg>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
-                                                            <li class="linkedin-share">
-                                                                <a class="sharing-btn linkedin-btn linkedin-theme-bg-hover" data-placement="top" title="Share on Linkedin" href="#">
-                                                                    <div class="share-item__icon">
-                                                                        <svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
-                                                                            <g>
-                                                                                <path d="m13.3 31.7h-5v-16.7h5v16.7z m18.4 0h-5v-8.9c0-2.4-0.9-3.5-2.5-3.5-1.3 0-2.1 0.6-2.5 1.9v10.5h-5s0-15 0-16.7h3.9l0.3 3.3h0.1c1-1.6 2.7-2.8 4.9-2.8 1.7 0 3.1 0.5 4.2 1.7 1 1.2 1.6 2.8 1.6 5.1v9.4z m-18.3-20.9c0 1.4-1.1 2.5-2.6 2.5s-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5 2.6 1.2 2.6 2.5z"></path>
-                                                                            </g>
-                                                                        </svg>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
+                                                        <!-- social share button start in comming from the function.php custom made. -->
+                                                        <?php wpb_social_share_buttons(); ?>
+                                                        <!-- social share button start in comming from the function.php custom made. -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -323,14 +311,14 @@ if (have_posts()) :
                                             <div class="list-item">
                                                 <article class="post post--vertical post--vertical-card-overlap post--hover-theme">
                                                     <div class="post__thumb object-fit">
-                                                        <a href="./single-1.html">
+                                                        <a href="#single.html">
                                                             <img src="http://via.placeholder.com/250x150" alt="File not found">
                                                         </a>
                                                     </div>
                                                     <div class="post__text inverse-text author-avatar-right">
                                                         <a href="./category.html" class="post__cat post__cat--bg post__cat-overlap">GADGETS</a>
                                                         <h3 class="post__title f-20 f-w-600 m-b-10 m-t-10 atbs-line-limit atbs-line-limit-2">
-                                                            <a href="./single-1.html">Oculus Working on Update to Improve Rift S Audio</a>
+                                                            <a href="#single.html">Oculus Working on Update to Improve Rift S Audio</a>
                                                         </h3>
                                                         <div class="post__meta border-avatar flex-box align-item-center justify-content-space">
                                                             <div class="post-author post-author_style-7">
@@ -352,14 +340,14 @@ if (have_posts()) :
                                             <div class="list-item">
                                                 <article class="post post--vertical post--vertical-card-overlap post--hover-theme">
                                                     <div class="post__thumb object-fit">
-                                                        <a href="./single-1.html">
+                                                        <a href="#single.html">
                                                             <img src="http://via.placeholder.com/250x150" alt="File not found">
                                                         </a>
                                                     </div>
                                                     <div class="post__text inverse-text author-avatar-right">
                                                         <a href="./category.html" class="post__cat post__cat--bg post__cat-overlap">GADGETS</a>
                                                         <h3 class="post__title f-20 f-w-600 m-b-10 m-t-10 atbs-line-limit atbs-line-limit-2">
-                                                            <a href="./single-1.html">Oculus Working on Update to Improve Rift S Audio</a>
+                                                            <a href="#single.html">Oculus Working on Update to Improve Rift S Audio</a>
                                                         </h3>
                                                         <div class="post__meta border-avatar flex-box align-item-center justify-content-space">
                                                             <div class="post-author post-author_style-7">
@@ -381,14 +369,14 @@ if (have_posts()) :
                                             <div class="list-item">
                                                 <article class="post post--vertical post--vertical-card-overlap post--hover-theme">
                                                     <div class="post__thumb object-fit">
-                                                        <a href="./single-1.html">
+                                                        <a href="#single.html">
                                                             <img src="http://via.placeholder.com/250x150" alt="File not found">
                                                         </a>
                                                     </div>
                                                     <div class="post__text inverse-text author-avatar-right">
                                                         <a href="./category.html" class="post__cat post__cat--bg post__cat-overlap">GADGETS</a>
                                                         <h3 class="post__title f-20 f-w-600 m-b-10 m-t-10 atbs-line-limit atbs-line-limit-2">
-                                                            <a href="./single-1.html">Oculus Working on Update to Improve Rift S Audio</a>
+                                                            <a href="#single.html">Oculus Working on Update to Improve Rift S Audio</a>
                                                         </h3>
                                                         <div class="post__meta border-avatar flex-box align-item-center justify-content-space">
                                                             <div class="post-author post-author_style-7">

@@ -644,7 +644,8 @@ add_filter('get_comment_author_link', 'custom_comment_author_link', 10, 3);
 // for adding and remove author url end here--------------->
 
 // for changing the order of comments
-function set_comments_order($comments) {
+function set_comments_order($comments)
+{
     if (isset($_GET['comment_order'])) {
         update_option('comment_order', $_GET['comment_order']);
     }
@@ -659,17 +660,99 @@ add_filter('comments_array', 'set_comments_order');
    ============================================================================================
 */
 // post views counter 
-function custom_post_views() {
+function custom_post_views()
+{
     $postID = get_the_ID();
     $count_key = 'custom_post_views_count';
     $count = get_post_meta($postID, $count_key, true);
-    if($count==''){
+    if ($count == '') {
         $count = 1;
         add_post_meta($postID, $count_key, '1');
-    }else{
+    } else {
         $count++;
         update_post_meta($postID, $count_key, $count);
     }
 }
 
 // post views counter  end here --------->
+
+// social share button start here
+function wpb_social_share_buttons()
+{
+    $social_sites = array('facebook', 'twitter', 'pinterest', 'linkedin', 'Instagram');
+
+    // social icons
+    $fb = '<svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em"
+    viewBox="0 0 40 40">
+    <g>
+      <path
+        d="m21.7 16.7h5v5h-5v11.6h-5v-11.6h-5v-5h5v-2.1c0-2 0.6-4.5 1.8-5.9 1.3-1.3 2.8-2 4.7-2h3.5v5h-3.5c-0.9 0-1.5 0.6-1.5 1.5v3.5z"></path>
+    </g>
+  </svg>';
+    $tw = '<svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em"
+  viewBox="0 0 40 40">
+  <g>
+    <path
+      d="m31.5 11.7c1.3-0.8 2.2-2 2.7-3.4-1.4 0.7-2.7 1.2-4 1.4-1.1-1.2-2.6-1.9-4.4-1.9-1.7 0-3.2 0.6-4.4 1.8-1.2 1.2-1.8 2.7-1.8 4.4 0 0.5 0.1 0.9 0.2 1.3-5.1-0.1-9.4-2.3-12.7-6.4-0.6 1-0.9 2.1-0.9 3.1 0 2.2 1 3.9 2.8 5.2-1.1-0.1-2-0.4-2.8-0.8 0 1.5 0.5 2.8 1.4 4 0.9 1.1 2.1 1.8 3.5 2.1-0.5 0.1-1 0.2-1.6 0.2-0.5 0-0.9 0-1.1-0.1 0.4 1.2 1.1 2.3 2.1 3 1.1 0.8 2.3 1.2 3.6 1.3-2.2 1.7-4.7 2.6-7.6 2.6-0.7 0-1.2 0-1.5-0.1 2.8 1.9 6 2.8 9.5 2.8 3.5 0 6.7-0.9 9.4-2.7 2.8-1.8 4.8-4.1 6.1-6.7 1.3-2.6 1.9-5.3 1.9-8.1v-0.8c1.3-0.9 2.3-2 3.1-3.2-1.1 0.5-2.3 0.8-3.5 1z"></path>
+  </g>
+</svg>';
+    $pin = '<svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
+<g>
+    <path d="m37.3 20q0 4.7-2.3 8.6t-6.3 6.2-8.6 2.3q-2.4 0-4.8-0.7 1.3-2 1.7-3.6 0.2-0.8 1.2-4.7 0.5 0.8 1.7 1.5t2.5 0.6q2.7 0 4.8-1.5t3.3-4.2 1.2-6.1q0-2.5-1.4-4.7t-3.8-3.7-5.7-1.4q-2.4 0-4.4 0.7t-3.4 1.7-2.5 2.4-1.5 2.9-0.4 3q0 2.4 0.8 4.1t2.7 2.5q0.6 0.3 0.8-0.5 0.1-0.1 0.2-0.6t0.2-0.7q0.1-0.5-0.3-1-1.1-1.3-1.1-3.3 0-3.4 2.3-5.8t6.1-2.5q3.4 0 5.3 1.9t1.9 4.7q0 3.8-1.6 6.5t-3.9 2.6q-1.3 0-2.2-0.9t-0.5-2.4q0.2-0.8 0.6-2.1t0.7-2.3 0.2-1.6q0-1.2-0.6-1.9t-1.7-0.7q-1.4 0-2.3 1.2t-1 3.2q0 1.6 0.6 2.7l-2.2 9.4q-0.4 1.5-0.3 3.9-4.6-2-7.5-6.3t-2.8-9.4q0-4.7 2.3-8.6t6.2-6.2 8.6-2.3 8.6 2.3 6.3 6.2 2.3 8.6z"></path>
+</g>
+</svg>';
+
+    $linkedin = '<svg fill="#888" preserveAspectRatio="xMidYMid meet" height="1.3em" width="1.3em" viewBox="0 0 40 40">
+<g>
+    <path d="m13.3 31.7h-5v-16.7h5v16.7z m18.4 0h-5v-8.9c0-2.4-0.9-3.5-2.5-3.5-1.3 0-2.1 0.6-2.5 1.9v10.5h-5s0-15 0-16.7h3.9l0.3 3.3h0.1c1-1.6 2.7-2.8 4.9-2.8 1.7 0 3.1 0.5 4.2 1.7 1 1.2 1.6 2.8 1.6 5.1v9.4z m-18.3-20.9c0 1.4-1.1 2.5-2.6 2.5s-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5 2.6 1.2 2.6 2.5z"></path>
+</g>
+</svg>';
+ $insta = '<svg id="instagram" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+ <path id="Path_1510" data-name="Path 1510" d="M104.916,91H93.2A2.2,2.2,0,0,0,91,93.2v11.719a2.2,2.2,0,0,0,2.2,2.2h11.719a2.2,2.2,0,0,0,2.2-2.2V93.2A2.2,2.2,0,0,0,104.916,91Zm-5.859,13.184a5.127,5.127,0,1,1,5.127-5.127A5.133,5.133,0,0,1,99.057,104.184Zm5.127-8.789a1.465,1.465,0,1,1,1.465-1.465A1.467,1.467,0,0,1,104.184,95.395Zm0,0" transform="translate(-86.557 -86.557)" fill="#7d7d7d"></path>
+ <path id="Path_1511" data-name="Path 1511" d="M184.662,181a3.662,3.662,0,1,0,3.662,3.662A3.666,3.666,0,0,0,184.662,181Zm0,0" transform="translate(-172.162 -172.162)" fill="#7d7d7d"></path>
+ <path id="Path_1512" data-name="Path 1512" d="M21.289,0H3.711A3.751,3.751,0,0,0,0,3.711V21.289A3.751,3.751,0,0,0,3.711,25H21.289A3.751,3.751,0,0,0,25,21.289V3.711A3.751,3.751,0,0,0,21.289,0Zm.732,18.359a3.666,3.666,0,0,1-3.662,3.662H6.641a3.666,3.666,0,0,1-3.662-3.662V6.641A3.666,3.666,0,0,1,6.641,2.979H18.359a3.666,3.666,0,0,1,3.662,3.662Zm0,0" fill="#7d7d7d"></path>
+</svg>';
+
+
+    // Get current post URL 
+    $url = urlencode(get_permalink());
+
+    // Get current post title
+    $title = str_replace(' ', '%20', get_the_title());
+
+    // Get the featured image of the post
+    $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'medium');
+    $image_url = urlencode($image[0]);
+
+    // Create the social share buttons
+    $social_links = array();
+    foreach ($social_sites as $social_site) {
+        switch ($social_site) {
+            case 'facebook':
+                $link = 'https://www.facebook.com/sharer/sharer.php?u=' . $url;
+                $social_links[] = '<li class="facebook-share"><a class="sharing-btn sharing-btn-primary facebook-btn facebook-theme-bg-hover" data-placement="top" title="Share on Facebook" href="' . $link . '"><div class="share-item__icon">' . $fb . '</div></a></li>';
+                break;
+            case 'twitter':
+                $link = 'https://twitter.com/intent/tweet?text=' . $title . '&amp;url=' . $url;
+                $social_links[] = '<li class="twitter-share"><a class="sharing-btn sharing-btn-primary twitter-btn twitter-theme-bg-hover" data-placement="top" title="Share on Twitter" href="' . $link . '"><div class="share-item__icon">' . $tw . '</div></a></li>';
+                break;
+            case 'pinterest':
+                $link = 'https://www.pinterest.com/pin/create/button/?url=' . $url . '&amp;media=' . $image_url . '&amp;description=' . $title;
+                $social_links[] = '<li class="pinterest-share"><a class="sharing-btn pinterest-btn pinterest-theme-bg-hover" data-placement="top" title="Share on Pinterest" href="' . $link . '"><div class="share-item__icon">' . $pin . '</div></a></li>';
+                break;
+            case 'linkedin':
+                $link = 'https://www.linkedin.com/shareArticle?mini=true&url=' . $url . '&amp;title=' . $title;
+                $social_links[] = '<li class="linkedin-share"><a class="sharing-btn linkedin-btn linkedin-theme-bg-hover" data-placement="top" title="Share on Linkedin" href="' . $link . '"><div class="share-item__icon">'. $linkedin.'</div></a></li>';
+                break;
+            // case 'Instagram':
+            //     $link = 'https://www.instagram.com/share?url=' .$url. '&title=' .$title; // replace with your Instagram sharing link
+            //     $social_links[] = '<li class="Instagram-share"><a class="sharing-btn Instagram-btn Instagram-theme-bg-hover" data-placement="top" title="Share on Instagram" href="' . $link . '"><div class="share-item__icon">'.$insta.'</div></a></li>';
+            //     break;
+        }
+    }
+
+    // Output the social share buttons
+    echo '<ul class="social-list">' . implode('', $social_links) . '</ul>';
+}
+
+// social share button end here ------------------->
